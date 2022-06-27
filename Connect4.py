@@ -90,7 +90,7 @@ drawBoard(board)
 pygame.display.update()
 
 myfont = pygame.font.SysFont("monospace", 75)
-
+validLocation = False
 while not gameOver:
 
 	for event in pygame.event.get():
@@ -106,6 +106,9 @@ while not gameOver:
 				pygame.draw.circle(screen, YELLOW, (posx, int(SQUARESIZE/2)), RADIUS)
 		pygame.display.update()
 
+	
+
+
 		if event.type == pygame.MOUSEBUTTONDOWN:
 			pygame.draw.rect(screen, BLACK, (0,0, width, SQUARESIZE))
 			#print(event.pos)
@@ -115,6 +118,7 @@ while not gameOver:
 				col = int(math.floor(posx/SQUARESIZE))
 
 				if isValidLocation(board, col):
+					print(isValidLocation(board, col)) #debugging
 					row = getNextOpenRow(board, col)
 					dropPiece(board, row, col, 1)
 
@@ -122,14 +126,15 @@ while not gameOver:
 						label = myfont.render("Player 1 wins!!", 1, RED)
 						screen.blit(label, (40,10))
 						gameOver = True
-
-
+				else:
+					turn -= 1
 			# # Ask for Player 2 Input
 			else:				
 				posx = event.pos[0]
 				col = int(math.floor(posx/SQUARESIZE))
 
 				if isValidLocation(board, col):
+					print(isValidLocation(board, col)) #debugging
 					row = getNextOpenRow(board, col)
 					dropPiece(board, row, col, 2)
 
@@ -137,7 +142,8 @@ while not gameOver:
 						label = myfont.render("Player 2 wins!!", 1, YELLOW)
 						screen.blit(label, (40,10))
 						gameOver = True
-
+				else:
+					turn -= 1
 			printBoard(board)
 			drawBoard(board)
 

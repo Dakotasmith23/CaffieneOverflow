@@ -13,6 +13,27 @@ YELLOW = (255,255,0)
 NUM_ROWS= 6
 NUM_COLUMNS = 7
 
+SQUARESIZE = 100
+
+width = NUM_COLUMNS * SQUARESIZE
+height = (NUM_ROWS+1) * SQUARESIZE
+
+size = (width, height)
+
+RADIUS = int(SQUARESIZE/2 - 5)
+
+screen = pygame.display.set_mode(size)
+
+screenWidth = screen.get_width()
+screenHeight = screen.get_height()
+clock = pygame.time.Clock()
+FPS=30
+
+myfont = pygame.font.SysFont("monospace", 75)
+smallerFont = pygame.font.SysFont("monospace", 35)
+
+validLocation = False
+
 def createBoard():
 	board = numpy.zeros((NUM_ROWS,NUM_COLUMNS))
 	return board
@@ -73,26 +94,6 @@ def drawBoard(board):
 
 board = createBoard()
 printBoard(board)
-
-SQUARESIZE = 100
-
-width = NUM_COLUMNS * SQUARESIZE
-height = (NUM_ROWS+1) * SQUARESIZE
-
-size = (width, height)
-
-RADIUS = int(SQUARESIZE/2 - 5)
-
-screen = pygame.display.set_mode(size)
-
-screenWidth = screen.get_width()
-screenHeight = screen.get_height()
-clock = pygame.time.Clock()
-FPS=30
-
-myfont = pygame.font.SysFont("monospace", 75)
-smallerFont = pygame.font.SysFont("monospace", 35)
-validLocation = False
 
 def game_loop():
 	gameOver = False

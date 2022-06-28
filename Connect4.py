@@ -158,7 +158,7 @@ def game_loop():
 					#ADD SHOW GAME HISTORY HERE
 					pygame.time.wait(3000) 
 
-def main_menu():
+def drawStartUI():
 	menu = True
 	selected = 0
 
@@ -205,4 +205,4 @@ def main_menu():
 		clock.tick(FPS)
 		pygame.display.set_caption("Connect Four - Use arrow keys to select menu option")
 
-main_menu()
+drawStartUI()

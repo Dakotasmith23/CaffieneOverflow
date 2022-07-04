@@ -2,6 +2,8 @@ import numpy
 import pygame
 import sys
 import math
+import subprocess
+import sys
 
 pygame.init()
 
@@ -91,6 +93,58 @@ def drawBoard(board):
 				pygame.draw.circle(screen, YELLOW, (int(c*SQUARESIZE+SQUARESIZE/2), height-int(r*SQUARESIZE+SQUARESIZE/2)), RADIUS)
 	pygame.display.update()
 
+def drawMessage(message):
+	pass
+
+def drawStartUI():
+	menu = True
+	selected = 0
+
+	while menu:
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				pygame.quit()
+				sys.exit()
+			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_UP:
+					selected = 0
+				elif event.key == pygame.K_DOWN:
+					selected = 1
+				if event.key == pygame.K_RETURN:
+					if selected == 0:
+						print("Game Started")
+						drawBoard(board)
+						pygame.display.update()
+						game_loop()
+					else:
+						pygame.quit()
+						sys.exit()
+		# Main Menu UI
+		screen.fill((60,60,60))
+		title = myfont.render('Connect Four', True, (255,255,255))
+		if selected == 0:
+			text_start = smallerFont.render('Player vs Player (Local)', True, RED)
+		else:
+			text_start = smallerFont.render('Player vs Player (Local)', True, (0,0,0))
+		if selected == 1:
+			text_quit = smallerFont.render('Quit', True, RED)
+		else:
+			text_quit = smallerFont.render('Quit', True, (0,0,0))
+
+		title_rect = title.get_rect()
+		start_rect = text_start.get_rect()
+		quit_rect = text_quit.get_rect()
+
+		# Main Menu Text
+		screen.blit(title, (screenWidth/2 - (title_rect[2]/2), 80))
+		screen.blit(text_start, (screenWidth/2 - (start_rect[2]/2), 300))
+		screen.blit(text_quit, (screenWidth/2 - (quit_rect[2]/2), 360))
+		pygame.display.update()
+		clock.tick(FPS)
+		pygame.display.set_caption("Connect Four - Use arrow keys to select menu option")
+
+def dropPieceAI(board):
+	pass
 
 board = createBoard()
 printBoard(board)
@@ -157,52 +211,5 @@ def game_loop():
 				if gameOver:
 					#ADD SHOW GAME HISTORY HERE
 					pygame.time.wait(3000) 
-
-def drawStartUI():
-	menu = True
-	selected = 0
-
-	while menu:
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				pygame.quit()
-				sys.exit()
-			if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_UP:
-					selected = 0
-				elif event.key == pygame.K_DOWN:
-					selected = 1
-				if event.key == pygame.K_RETURN:
-					if selected == 0:
-						print("Game Started")
-						drawBoard(board)
-						pygame.display.update()
-						game_loop()
-					else:
-						pygame.quit()
-						sys.exit()
-		# Main Menu UI
-		screen.fill((60,60,60))
-		title = myfont.render('Connect Four', True, (255,255,255))
-		if selected == 0:
-			text_start = smallerFont.render('Player vs Player (Local)', True, RED)
-		else:
-			text_start = smallerFont.render('Player vs Player (Local)', True, (0,0,0))
-		if selected == 1:
-			text_quit = smallerFont.render('Quit', True, RED)
-		else:
-			text_quit = smallerFont.render('Quit', True, (0,0,0))
-
-		title_rect = title.get_rect()
-		start_rect = text_start.get_rect()
-		quit_rect = text_quit.get_rect()
-
-		# Main Menu Text
-		screen.blit(title, (screenWidth/2 - (title_rect[2]/2), 80))
-		screen.blit(text_start, (screenWidth/2 - (start_rect[2]/2), 300))
-		screen.blit(text_quit, (screenWidth/2 - (quit_rect[2]/2), 360))
-		pygame.display.update()
-		clock.tick(FPS)
-		pygame.display.set_caption("Connect Four - Use arrow keys to select menu option")
 
 drawStartUI()

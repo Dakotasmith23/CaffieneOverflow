@@ -1,9 +1,38 @@
-import numpy
-import pygame
 import sys
 import math
-import subprocess
-import sys
+
+try:
+	import numpy
+	import pygame
+except ImportError:
+	import subprocess
+	import sys
+	import os
+
+	def checkRequirements():
+		if os.name == 'nt':
+			import ctypes
+			MessageBox = ctypes.windll.user32.MessageBoxW
+			result = MessageBox(None, "Missing required modules, do you want to install these?\nThis will take a minute", "Missing Pygame/Numpy", 4)
+		else: # Assume POSIX
+			print("Install missing numpy/pygame libraries? [(Y)es/No]")
+			yes = {'yes','ye', 'y', ''}
+			reply = input().lower()
+			if reply in yes:
+				result = 6 # Same as MessageBoxW yes on Win32
+			else:
+				result = 7 # Same as MessageBoxW no on Win32, but it could really be anything
+
+		if result == 6:
+			print("Please wait a moment while modules are being installed")
+			#https://pip.pypa.io/en/latest/user_guide/#using-pip-from-your-program
+			subprocess.check_call([sys.executable, "-m", "pip", "install", "pygame"])
+			subprocess.check_call([sys.executable, "-m", "pip", "install", "numpy"])
+			os.startfile(sys.argv[0]) #Restart game
+		sys.exit()
+
+	checkRequirements()
+
 
 pygame.init()
 

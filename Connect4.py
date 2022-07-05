@@ -9,21 +9,21 @@ except ImportError:
 	import sys
 	import os
 
+	# Tbh this has no business being a function due to the way it needs to be called
 	def checkRequirements():
-		if os.name == 'nt':
+		"""Check if the user has the required dependencies, if not, ask to install them"""
+		if os.name == 'nt': # Windoze
 			import ctypes
 			MessageBox = ctypes.windll.user32.MessageBoxW
 			result = MessageBox(None, "Missing required modules, do you want to install these?\nThis will take a minute", "Missing Pygame/Numpy", 4)
 		else: # Assume POSIX
 			print("Install missing numpy/pygame libraries? [(Y)es/No]")
-			yes = {'yes','ye', 'y', ''}
-			reply = input().lower()
-			if reply in yes:
+			if input().lower() in {'yes','ye', 'y', ''}:
 				result = 6 # Same as MessageBoxW yes on Win32
 			else:
 				result = 7 # Same as MessageBoxW no on Win32, but it could really be anything
 
-		if result == 6:
+		if result == 6: # User agreed to installation
 			print("Please wait a moment while modules are being installed")
 			#https://pip.pypa.io/en/latest/user_guide/#using-pip-from-your-program
 			subprocess.check_call([sys.executable, "-m", "pip", "install", "pygame"])
@@ -34,56 +34,57 @@ except ImportError:
 	checkRequirements()
 
 
-pygame.init()
-
+# Colors
 BLUE = (0,0,255)
 BLACK = (0,0,0)
 RED = (255,0,0)
 YELLOW = (255,255,0)
 
+# Constants
 NUM_ROWS= 6
 NUM_COLUMNS = 7
-
 SQUARESIZE = 100
-
-width = NUM_COLUMNS * SQUARESIZE
-height = (NUM_ROWS+1) * SQUARESIZE
-
-size = (width, height)
-
-RADIUS = int(SQUARESIZE/2 - 5)
-
-screen = pygame.display.set_mode(size)
-
-screenWidth = screen.get_width()
-screenHeight = screen.get_height()
-clock = pygame.time.Clock()
 FPS=30
 
+# Sizes
+screenWidth = NUM_COLUMNS * SQUARESIZE
+screenHeight = (NUM_ROWS+1) * SQUARESIZE
+size = (screenWidth, screenHeight)
+RADIUS = int(SQUARESIZE/2 - 5)
+
+# Initialization
+pygame.init()
+screen = pygame.display.set_mode(size)
+clock = pygame.time.Clock()
 myfont = pygame.font.SysFont("monospace", 75)
 smallerFont = pygame.font.SysFont("monospace", 35)
-
 validLocation = False
 
 def createBoard():
+	"""Creates an empty numpy array matrix of NUM_ROWS and NUM_COLUMNS"""
 	board = numpy.zeros((NUM_ROWS,NUM_COLUMNS))
 	return board
 
 def dropPiece(board, row, col, piece):
+	"""Push the players piece to the specified location"""
 	board[row][col] = piece
 
 def isValidLocation(board, col):
+	"""Returns boolean depending on if the location desired is valid"""
 	return board[NUM_ROWS-1][col] == 0
 
 def getNextOpenRow(board, col):
+	"""Return the closest free row"""
 	for r in range(NUM_ROWS):
 		if board[r][col] == 0:
 			return r
 
 def printBoard(board):
+	"""Prints the array matrix for the user to see their previous game history"""
 	print(numpy.flip(board, 0))
 
 def winningMove(board, piece):
+	"""Checks horizonal/vertical/diaganol positions to determine if there is 4 pieces in a row"""
 	# Check horizontal locations for win
 	for c in range(NUM_COLUMNS-3):
 		for r in range(NUM_ROWS):
@@ -109,6 +110,7 @@ def winningMove(board, piece):
 				return True
 
 def drawBoard(board):
+	"""Uses pygame's draw functionality to display the current board"""
 	for c in range(NUM_COLUMNS):
 		for r in range(NUM_ROWS):
 			pygame.draw.rect(screen, BLUE, (c*SQUARESIZE, r*SQUARESIZE+SQUARESIZE, SQUARESIZE, SQUARESIZE))
@@ -117,15 +119,18 @@ def drawBoard(board):
 	for c in range(NUM_COLUMNS):
 		for r in range(NUM_ROWS):		
 			if board[r][c] == 1:
-				pygame.draw.circle(screen, RED, (int(c*SQUARESIZE+SQUARESIZE/2), height-int(r*SQUARESIZE+SQUARESIZE/2)), RADIUS)
+				pygame.draw.circle(screen, RED, (int(c*SQUARESIZE+SQUARESIZE/2), screenHeight-int(r*SQUARESIZE+SQUARESIZE/2)), RADIUS)
 			elif board[r][c] == 2: 
-				pygame.draw.circle(screen, YELLOW, (int(c*SQUARESIZE+SQUARESIZE/2), height-int(r*SQUARESIZE+SQUARESIZE/2)), RADIUS)
+				pygame.draw.circle(screen, YELLOW, (int(c*SQUARESIZE+SQUARESIZE/2), screenHeight-int(r*SQUARESIZE+SQUARESIZE/2)), RADIUS)
 	pygame.display.update()
 
 def drawMessage(message):
+	"""Uses pygame's rect and label functionality to create a rectangle with the desired message for ethe user"""
+	# Function stub --- to be implemented
 	pass
 
 def drawStartUI():
+	"""Draws main menu UI"""
 	menu = True
 	selected = 0
 
@@ -172,7 +177,9 @@ def drawStartUI():
 		clock.tick(FPS)
 		pygame.display.set_caption("Connect Four - Use arrow keys to select menu option")
 
-def dropPieceAI(board):
+def dropPieceAI(difficulty, board, piece):
+	"""Select the best move determined on the AI difficulty"""
+	# Function stub --- to be implemented
 	pass
 
 board = createBoard()
@@ -188,7 +195,7 @@ def game_loop():
 				sys.exit()
 
 			if event.type == pygame.MOUSEMOTION:
-				pygame.draw.rect(screen, BLACK, (0,0, width, SQUARESIZE))
+				pygame.draw.rect(screen, BLACK, (0,0, screenWidth, SQUARESIZE))
 				posx = event.pos[0]
 				if turn == 0:
 					pygame.draw.circle(screen, RED, (posx, int(SQUARESIZE/2)), RADIUS)
@@ -197,7 +204,7 @@ def game_loop():
 			pygame.display.update()
 
 			if event.type == pygame.MOUSEBUTTONDOWN:
-				pygame.draw.rect(screen, BLACK, (0,0, width, SQUARESIZE))
+				pygame.draw.rect(screen, BLACK, (0,0, screenWidth, SQUARESIZE))
 				#print(event.pos)
 				# Ask for Player 1 Input
 				if turn == 0:
@@ -215,7 +222,7 @@ def game_loop():
 							gameOver = True
 					else:
 						turn -= 1
-				# # Ask for Player 2 Input
+				# Ask for Player 2 Input
 				else:				
 					posx = event.pos[0]
 					col = int(math.floor(posx/SQUARESIZE))

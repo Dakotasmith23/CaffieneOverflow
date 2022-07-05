@@ -39,16 +39,19 @@ BLUE = (0,0,255)
 BLACK = (0,0,0)
 RED = (255,0,0)
 YELLOW = (255,255,0)
+WHITE = (255,255,255)
+GRAY = (216,216,216)
 
 # Constants
 NUM_ROWS= 6
 NUM_COLUMNS = 7
-SQUARESIZE = 100
+SQUARESIZE = 87
+PADDING = 15
 FPS=30
 
 # Sizes
-screenWidth = NUM_COLUMNS * SQUARESIZE
-screenHeight = (NUM_ROWS+1) * SQUARESIZE
+screenWidth = 1024
+screenHeight = 768
 size = (screenWidth, screenHeight)
 RADIUS = int(SQUARESIZE/2 - 5)
 
@@ -111,21 +114,35 @@ def winningMove(board, piece):
 
 def drawBoard(board):
 	"""Uses pygame's draw functionality to display the current board"""
+
+	# Flush previous screen
+	pygame.Surface.fill(screen, WHITE)
+
+	start_vertical = (screenHeight - (SQUARESIZE*NUM_ROWS + PADDING*(NUM_ROWS+2)))
+
+	pygame.draw.rect(screen, BLUE, (PADDING, start_vertical, (NUM_COLUMNS*(PADDING+SQUARESIZE) + PADDING), (NUM_ROWS*(PADDING+SQUARESIZE) + PADDING)), 0, int(RADIUS/2))
+
 	for c in range(NUM_COLUMNS):
 		for r in range(NUM_ROWS):
-			pygame.draw.rect(screen, BLUE, (c*SQUARESIZE, r*SQUARESIZE+SQUARESIZE, SQUARESIZE, SQUARESIZE))
-			pygame.draw.circle(screen, BLACK, (int(c*SQUARESIZE+SQUARESIZE/2), int(r*SQUARESIZE+SQUARESIZE+SQUARESIZE/2)), RADIUS)
+			pygame.draw.circle(screen, WHITE, (PADDING + int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), start_vertical + int((r+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2)), RADIUS)
 	
 	for c in range(NUM_COLUMNS):
 		for r in range(NUM_ROWS):		
 			if board[r][c] == 1:
-				pygame.draw.circle(screen, RED, (int(c*SQUARESIZE+SQUARESIZE/2), screenHeight-int(r*SQUARESIZE+SQUARESIZE/2)), RADIUS)
+				pygame.draw.circle(screen, RED, (PADDING + int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), screenHeight-int((r+1)*(SQUARESIZE+PADDING)-SQUARESIZE/2+PADDING)-1), RADIUS) #jesus
 			elif board[r][c] == 2: 
-				pygame.draw.circle(screen, YELLOW, (int(c*SQUARESIZE+SQUARESIZE/2), screenHeight-int(r*SQUARESIZE+SQUARESIZE/2)), RADIUS)
+				pygame.draw.circle(screen, YELLOW, (PADDING + int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), screenHeight-int((r+1)*(SQUARESIZE+PADDING)-SQUARESIZE/2+PADDING)-1), RADIUS)
+	drawHistory(board)
+	pygame.display.update()
+
+def drawHistory(board):
+	"""Displays game history on a side panel"""
+	# Needs to be implemented
+	pygame.draw.rect(screen, GRAY, ((screenWidth - 250 - PADDING), PADDING, 250, (screenHeight - (2*PADDING))), 0, int(RADIUS/2))
 	pygame.display.update()
 
 def drawMessage(message):
-	"""Uses pygame's rect and label functionality to create a rectangle with the desired message for ethe user"""
+	"""Uses pygame's rect and label functionality to create a rectangle with the desired message for the user"""
 	# Function stub --- to be implemented
 	pass
 
@@ -133,6 +150,9 @@ def drawStartUI():
 	"""Draws main menu UI"""
 	menu = True
 	selected = 0
+
+	# Flush previous screen
+	pygame.Surface.fill(screen, WHITE)
 
 	while menu:
 		for event in pygame.event.get():

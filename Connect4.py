@@ -306,7 +306,7 @@ def game_loop(gameOver, board):
 				turn = turn % 2
 
 				if gameOver:
-					#pygame.time.wait(3000) 
+					pygame.time.wait(3000) 
 					drawStartUI(board, gameOver)
 
 drawStartUI(board, gameOver)

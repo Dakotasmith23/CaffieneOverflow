@@ -173,33 +173,6 @@ def drawStartUI():
 		else:
 			text_quit = renderText("Quit", WHITE, 35)
 
-			# if event.type == pygame.KEYDOWN:
-			# 	if event.key == pygame.K_UP:
-			# 		selected = 0
-			# 	elif event.key == pygame.K_DOWN:
-			# 		selected = 1
-			# 	if event.key == pygame.K_RETURN:
-			# 		if selected == 0:
-			# 			print("Game Started")
-			# 			drawBoard(board)
-			# 			pygame.display.update()
-			# 			game_loop()
-			# 		else:
-			# 			pygame.quit()
-			# 			sys.exit()
-		# Main Menu UI
-		
-		# if selected == 0:
-		# 	text_start = smallerFont.render('Player vs Player (Local)', True, RED)
-		# else:
-		# 	text_start = smallerFont.render('Player vs Player (Local)', True, (0,0,0))
-		# if selected == 1:
-		# 	text_quit = smallerFont.render('Quit', True, RED)
-		# else:
-		# 	text_quit = smallerFont.render('Quit', True, (0,0,0))
-
-
-
 		# Main Menu Text
 		screen.blit(title, (screenWidth/2 - (title_rect[2]/2), 80))
 		screen.blit(text_start, (screenWidth/2 - (start_rect[2]/2), 300))

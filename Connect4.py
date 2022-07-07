@@ -40,7 +40,7 @@ BLACK = (0,0,0)
 RED = (255,0,0)
 YELLOW = (255,255,0)
 WHITE = (255, 255, 255)
-GREY = (177, 179, 177)
+GREY = (216,216,216)
 
 # Constants
 NUM_ROWS= 6
@@ -143,12 +143,11 @@ def drawStartUI():
 	while menu:
 		mouse_pos = pygame.mouse.get_pos()
 		screen.fill(WHITE)
+		
+		logo = pygame.image.load('logo.png')
+		text_start = renderText("Player vs Player (Local)", BLACK, 35)
+		text_quit = renderText("Quit", BLACK, 35)
 
-		title = renderText("Connect Four", RED, 75)
-		text_start = renderText("Player vs Player (Local)", WHITE, 35)
-		text_quit = renderText("Quit", WHITE, 35)
-
-		title_rect = title.get_rect()
 		start_rect = text_start.get_rect()
 		quit_rect = text_quit.get_rect()
 		pygame.draw.rect(screen, GREY, pygame.Rect(90, 295, 510, 55), 0, 10)
@@ -167,16 +166,16 @@ def drawStartUI():
 		if mouse_pos[0] in range(90, 600) and mouse_pos[1] in range(295, 350):
 			text_start = renderText("Player vs Player (Local)", RED, 35)
 		else:
-			text_start = renderText("Player vs Player (Local)", WHITE, 35)
+			text_start = renderText("Player vs Player (Local)", BLACK, 35)
 		if mouse_pos[0] in range(298, 398) and mouse_pos[1] in range(355, 455):
 			text_quit = renderText("Quit", RED, 35)
 		else:
-			text_quit = renderText("Quit", WHITE, 35)
+			text_quit = renderText("Quit", BLACK, 35)
 
 		# Main Menu Text
-		screen.blit(title, (screenWidth/2 - (title_rect[2]/2), 80))
 		screen.blit(text_start, (screenWidth/2 - (start_rect[2]/2), 300))
 		screen.blit(text_quit, (screenWidth/2 - (quit_rect[2]/2), 360))
+		screen.blit(logo, (screenWidth/2 - int(logo.get_width()/2),0))
 		pygame.display.update()
 		clock.tick(FPS)
 		pygame.display.set_caption("Connect Four")

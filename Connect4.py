@@ -59,8 +59,9 @@ pygame.init()
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 validLocation = False
+gameOver = False
 
-def renderText(text, color, fontSize, font="monospace"):
+def renderText(text, color, fontSize, font="Helvetica"):
     rFont = pygame.font.SysFont(font, fontSize)
     rText = rFont.render(text, True, color)
     return rText
@@ -87,6 +88,9 @@ def getNextOpenRow(board, col):
 def printBoard(board):
 	"""Prints the array matrix for the user to see their previous game history"""
 	print(numpy.flip(board, 0))
+
+board = createBoard()
+printBoard(board)
 
 def winningMove(board, piece):
 	"""Checks horizonal/vertical/diaganol positions to determine if there is 4 pieces in a row"""
@@ -129,12 +133,25 @@ def drawBoard(board):
 				pygame.draw.circle(screen, YELLOW, (int(c*SQUARESIZE+SQUARESIZE/2), screenHeight-int(r*SQUARESIZE+SQUARESIZE/2)), RADIUS)
 	pygame.display.update()
 
-def drawMessage(message):
+def drawMessage(message, backgroundColor, foregroundColor, strokeColor):
+	
 	"""Uses pygame's rect and label functionality to create a rectangle with the desired message for ethe user"""
-	# Function stub --- to be implemented
-	pass
+	time = 3000
+	while time:
+		bgRect = pygame.Rect((screenWidth/2 - 250), 250, 500, 200)
+		pygame.draw.rect(screen, backgroundColor, bgRect, 0, 10)
+		mText = renderText(message, foregroundColor, 55)
+		rText = mText.get_rect()
+		mText2 = renderText(message, strokeColor, 55)
+		rText2 = mText2.get_rect()
 
-def drawStartUI():
+		screen.blit(mText2, (screenWidth/2 - (rText2[2]/2) + 3, 323))
+		screen.blit(mText, (screenWidth/2 - (rText[2]/2), 320))
+		
+		pygame.display.update()
+		time -= 1
+
+def drawStartUI(board, gameOver):
 	"""Draws main menu UI"""
 	menu = True
 
@@ -170,8 +187,16 @@ def drawStartUI():
 				sys.exit()
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				if mouse_pos[0] in range(90, 600) and mouse_pos[1] in range(295, 350):
-					drawBoard(board)
-					game_loop()
+					if gameOver:
+						board = createBoard()
+						print(board)
+						screen.fill(BLACK)
+						drawBoard(board)
+						gameOver = False
+						game_loop(gameOver, board)
+					else:
+						drawBoard(board)
+						game_loop(gameOver, board)
 				elif mouse_pos[0] in range(100, 250) and mouse_pos[1] in range(412, 482):
 					#AI EASY GOES HERE
 					pass
@@ -209,9 +234,9 @@ def drawStartUI():
 		# Main Menu Text
 		screen.blit(text_start, (screenWidth/2 - (start_rect[2]/2), 300))
 		screen.blit(p_v_AI, (screenWidth/2 - (pvAI_rect[2]/2), 365))
-		screen.blit(AI_easy, (130, 425))
-		screen.blit(AI_med, (280, 425))
-		screen.blit(AI_hard, (470, 425))
+		screen.blit(AI_easy, (140, 425))
+		screen.blit(AI_med, (295, 425))
+		screen.blit(AI_hard, (480, 425))
 		screen.blit(text_quit, (screenWidth/2 - (quit_rect[2]/2), 510))
 		screen.blit(logo, (screenWidth/2 - int(logo.get_width()/2),0))
 		pygame.display.update()
@@ -223,11 +248,7 @@ def dropPieceAI(difficulty, board, piece):
 	# Function stub --- to be implemented
 	pass
 
-board = createBoard()
-printBoard(board)
-
-def game_loop():
-	gameOver = False
+def game_loop(gameOver, board):
 	turn = 0
 	
 	while not gameOver:
@@ -259,8 +280,7 @@ def game_loop():
 						dropPiece(board, row, col, 1)
 
 						if winningMove(board, 1):
-							label = renderText("Player 1 wins!!", RED, 75)
-							screen.blit(label, (40,10))
+							drawMessage("PLAYER 1 WINS!!", RED, WHITE, BLACK)
 							gameOver = True
 					else:
 						turn -= 1
@@ -275,8 +295,7 @@ def game_loop():
 						dropPiece(board, row, col, 2)
 
 						if winningMove(board, 2):
-							label = renderText("Player 2 wins!!", YELLOW, 75)
-							screen.blit(label, (40,10))
+							drawMessage("PLAYER 2 WINS!!", YELLOW, BLACK, GREY)
 							gameOver = True
 					else:
 						turn -= 1
@@ -287,7 +306,7 @@ def game_loop():
 				turn = turn % 2
 
 				if gameOver:
-					#ADD SHOW GAME HISTORY HERE
-					pygame.time.wait(3000) 
+					#pygame.time.wait(3000) 
+					drawStartUI(board, gameOver)
 
-drawStartUI()
+drawStartUI(board, gameOver)

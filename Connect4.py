@@ -35,10 +35,12 @@ except ImportError:
 
 
 # Colors
-BLUE = (0,0,255)
+BLUE = (23,107,250)
 BLACK = (0,0,0)
 RED = (255,0,0)
 YELLOW = (255,255,0)
+WHITE = (255, 255, 255)
+GREY = (216,216,216)
 
 # Constants
 NUM_ROWS= 6
@@ -56,9 +58,14 @@ RADIUS = int(SQUARESIZE/2 - 5)
 pygame.init()
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
-myfont = pygame.font.SysFont("monospace", 75)
-smallerFont = pygame.font.SysFont("monospace", 35)
+# myfont = pygame.font.SysFont("monospace", 75)
+# smallerFont = pygame.font.SysFont("monospace", 35)
 validLocation = False
+
+def renderText(text, color, fontSize, font="monospace"):
+    rFont = pygame.font.SysFont(font, fontSize)
+    rText = rFont.render(text, True, color)
+    return rText
 
 def createBoard():
 	"""Creates an empty numpy array matrix of NUM_ROWS and NUM_COLUMNS"""
@@ -132,50 +139,86 @@ def drawMessage(message):
 def drawStartUI():
 	"""Draws main menu UI"""
 	menu = True
-	selected = 0
 
 	while menu:
+		mouse_pos = pygame.mouse.get_pos()
+		screen.fill(WHITE)
+		
+		#Text Initializer
+		logo = pygame.image.load('logo.png')
+		text_start = renderText("Player vs Player (Local)", BLACK, 35)
+		text_quit = renderText("Quit", BLACK, 35)
+		p_v_AI = renderText("Player vs AI", WHITE, 35)
+		AI_easy = renderText("Easy", BLACK, 35)
+		AI_med = renderText("Medium", BLACK, 35)
+		AI_hard = renderText("Hard", BLACK, 35)
+
+		start_rect = text_start.get_rect()
+		quit_rect = text_quit.get_rect()
+		pvAI_rect = p_v_AI.get_rect()
+
+		#Main Menu Rectangles
+		pygame.draw.rect(screen, GREY, pygame.Rect(90, 295, 510, 55), 0, 10)
+		pygame.draw.rect(screen, BLUE, pygame.Rect(90, 355, 510, 145), 0, 10)
+		pygame.draw.rect(screen, GREY, pygame.Rect(100, 412, 150, 70), 0, 10)
+		pygame.draw.rect(screen, GREY, pygame.Rect(270, 412, 150, 70), 0, 10)
+		pygame.draw.rect(screen, GREY, pygame.Rect(440, 412, 150, 70), 0, 10)
+		pygame.draw.rect(screen, GREY, pygame.Rect(90, 505, 510, 55), 0, 10)
+
+		#Hover & Click Events
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				pygame.quit()
 				sys.exit()
-			if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_UP:
-					selected = 0
-				elif event.key == pygame.K_DOWN:
-					selected = 1
-				if event.key == pygame.K_RETURN:
-					if selected == 0:
-						print("Game Started")
-						drawBoard(board)
-						pygame.display.update()
-						game_loop()
-					else:
-						pygame.quit()
-						sys.exit()
-		# Main Menu UI
-		screen.fill((60,60,60))
-		title = myfont.render('Connect Four', True, (255,255,255))
-		if selected == 0:
-			text_start = smallerFont.render('Player vs Player (Local)', True, RED)
-		else:
-			text_start = smallerFont.render('Player vs Player (Local)', True, (0,0,0))
-		if selected == 1:
-			text_quit = smallerFont.render('Quit', True, RED)
-		else:
-			text_quit = smallerFont.render('Quit', True, (0,0,0))
+			if event.type == pygame.MOUSEBUTTONDOWN:
+				if mouse_pos[0] in range(90, 600) and mouse_pos[1] in range(295, 350):
+					drawBoard(board)
+					game_loop()
+				elif mouse_pos[0] in range(100, 250) and mouse_pos[1] in range(412, 482):
+					#AI EASY GOES HERE
+					pass
+				elif mouse_pos[0] in range(270, 420) and mouse_pos[1] in range(412, 482):
+					#AI MED GOES HERE
+					pass
+				elif mouse_pos[0] in range(440, 590) and mouse_pos[1] in range(412, 482):
+					#AI HARD GOES HERE
+					pass
+				elif mouse_pos[0] in range(90, 600) and mouse_pos[1] in range(505, 615):
+					pygame.quit()
+					sys.exit()
 
-		title_rect = title.get_rect()
-		start_rect = text_start.get_rect()
-		quit_rect = text_quit.get_rect()
+		if mouse_pos[0] in range(90, 600) and mouse_pos[1] in range(295, 350):
+			text_start = renderText("Player vs Player (Local)", RED, 35)
+		else:
+			text_start = renderText("Player vs Player (Local)", BLACK, 35)
+		if mouse_pos[0] in range(100, 250) and mouse_pos[1] in range(412, 482):
+			AI_easy = renderText("Easy", RED, 35)
+		else:
+			AI_easy = renderText("Easy", BLACK, 35)
+		if mouse_pos[0] in range(270, 420) and mouse_pos[1] in range(412, 482):
+			AI_med = renderText("Medium", RED, 35)
+		else:
+			AI_med = renderText("Medium", BLACK, 35)
+		if mouse_pos[0] in range(440, 590) and mouse_pos[1] in range(412, 482):
+			AI_hard = renderText("Hard", RED, 35)
+		else:
+			AI_hard = renderText("Hard", BLACK, 35)
+		if mouse_pos[0] in range(90, 600) and mouse_pos[1] in range(505, 615):
+			text_quit = renderText("Quit", RED, 35)
+		else:
+			text_quit = renderText("Quit", BLACK, 35)
 
 		# Main Menu Text
-		screen.blit(title, (screenWidth/2 - (title_rect[2]/2), 80))
 		screen.blit(text_start, (screenWidth/2 - (start_rect[2]/2), 300))
-		screen.blit(text_quit, (screenWidth/2 - (quit_rect[2]/2), 360))
+		screen.blit(p_v_AI, (screenWidth/2 - (pvAI_rect[2]/2), 365))
+		screen.blit(AI_easy, (130, 425))
+		screen.blit(AI_med, (280, 425))
+		screen.blit(AI_hard, (470, 425))
+		screen.blit(text_quit, (screenWidth/2 - (quit_rect[2]/2), 510))
+		screen.blit(logo, (screenWidth/2 - int(logo.get_width()/2),0))
 		pygame.display.update()
 		clock.tick(FPS)
-		pygame.display.set_caption("Connect Four - Use arrow keys to select menu option")
+		pygame.display.set_caption("Connect Four")
 
 def dropPieceAI(difficulty, board, piece):
 	"""Select the best move determined on the AI difficulty"""
@@ -188,8 +231,9 @@ printBoard(board)
 def game_loop():
 	gameOver = False
 	turn = 0
-
+	
 	while not gameOver:
+
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				sys.exit()
@@ -217,7 +261,7 @@ def game_loop():
 						dropPiece(board, row, col, 1)
 
 						if winningMove(board, 1):
-							label = myfont.render("Player 1 wins!!", 1, RED)
+							label = renderText("Player 1 wins!!", RED, 75)
 							screen.blit(label, (40,10))
 							gameOver = True
 					else:
@@ -233,7 +277,7 @@ def game_loop():
 						dropPiece(board, row, col, 2)
 
 						if winningMove(board, 2):
-							label = myfont.render("Player 2 wins!!", 1, YELLOW)
+							label = renderText("Player 2 wins!!", YELLOW, 75)
 							screen.blit(label, (40,10))
 							gameOver = True
 					else:

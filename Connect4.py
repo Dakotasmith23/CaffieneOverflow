@@ -58,8 +58,6 @@ RADIUS = int(SQUARESIZE/2 - 5)
 pygame.init()
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
-# myfont = pygame.font.SysFont("monospace", 75)
-# smallerFont = pygame.font.SysFont("monospace", 35)
 validLocation = False
 
 def renderText(text, color, fontSize, font="monospace"):

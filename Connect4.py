@@ -35,7 +35,7 @@ except ImportError:
 
 
 # Colors
-BLUE = (0,0,255)
+BLUE = (23,107,250)
 BLACK = (0,0,0)
 RED = (255,0,0)
 YELLOW = (255,255,0)
@@ -144,14 +144,28 @@ def drawStartUI():
 		mouse_pos = pygame.mouse.get_pos()
 		screen.fill(WHITE)
 		
+		#Text Initializer
 		logo = pygame.image.load('logo.png')
 		text_start = renderText("Player vs Player (Local)", BLACK, 35)
 		text_quit = renderText("Quit", BLACK, 35)
+		p_v_AI = renderText("Player vs AI", WHITE, 35)
+		AI_easy = renderText("Easy", BLACK, 35)
+		AI_med = renderText("Medium", BLACK, 35)
+		AI_hard = renderText("Hard", BLACK, 35)
 
 		start_rect = text_start.get_rect()
 		quit_rect = text_quit.get_rect()
+		pvAI_rect = p_v_AI.get_rect()
+
+		#Main Menu Rectangles
 		pygame.draw.rect(screen, GREY, pygame.Rect(90, 295, 510, 55), 0, 10)
-		pygame.draw.rect(screen, GREY, pygame.Rect(298, 355, 100, 55), 0, 10)
+		pygame.draw.rect(screen, BLUE, pygame.Rect(90, 355, 510, 145), 0, 10)
+		pygame.draw.rect(screen, GREY, pygame.Rect(100, 412, 150, 70), 0, 10)
+		pygame.draw.rect(screen, GREY, pygame.Rect(270, 412, 150, 70), 0, 10)
+		pygame.draw.rect(screen, GREY, pygame.Rect(440, 412, 150, 70), 0, 10)
+		pygame.draw.rect(screen, GREY, pygame.Rect(90, 505, 510, 55), 0, 10)
+
+		#Hover Events
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				pygame.quit()
@@ -160,21 +174,47 @@ def drawStartUI():
 				if mouse_pos[0] in range(90, 600) and mouse_pos[1] in range(295, 350):
 					drawBoard(board)
 					game_loop()
-				elif mouse_pos[0] in range(298, 398) and mouse_pos[1] in range(355, 455):
+				elif mouse_pos[0] in range(100, 250) and mouse_pos[1] in range(412, 482):
+					#AI EASY GOES HERE
+					pass
+				elif mouse_pos[0] in range(270, 420) and mouse_pos[1] in range(412, 482):
+					#AI MED GOES HERE
+					pass
+				elif mouse_pos[0] in range(440, 590) and mouse_pos[1] in range(412, 482):
+					#AI HARD GOES HERE
+					pass
+				elif mouse_pos[0] in range(90, 600) and mouse_pos[1] in range(505, 615):
 					pygame.quit()
 					sys.exit()
+
 		if mouse_pos[0] in range(90, 600) and mouse_pos[1] in range(295, 350):
 			text_start = renderText("Player vs Player (Local)", RED, 35)
 		else:
 			text_start = renderText("Player vs Player (Local)", BLACK, 35)
-		if mouse_pos[0] in range(298, 398) and mouse_pos[1] in range(355, 455):
+		if mouse_pos[0] in range(100, 250) and mouse_pos[1] in range(412, 482):
+			AI_easy = renderText("Easy", RED, 35)
+		else:
+			AI_easy = renderText("Easy", BLACK, 35)
+		if mouse_pos[0] in range(270, 420) and mouse_pos[1] in range(412, 482):
+			AI_med = renderText("Medium", RED, 35)
+		else:
+			AI_med = renderText("Medium", BLACK, 35)
+		if mouse_pos[0] in range(440, 590) and mouse_pos[1] in range(412, 482):
+			AI_hard = renderText("Hard", RED, 35)
+		else:
+			AI_hard = renderText("Hard", BLACK, 35)
+		if mouse_pos[0] in range(90, 600) and mouse_pos[1] in range(505, 615):
 			text_quit = renderText("Quit", RED, 35)
 		else:
 			text_quit = renderText("Quit", BLACK, 35)
 
 		# Main Menu Text
 		screen.blit(text_start, (screenWidth/2 - (start_rect[2]/2), 300))
-		screen.blit(text_quit, (screenWidth/2 - (quit_rect[2]/2), 360))
+		screen.blit(p_v_AI, (screenWidth/2 - (pvAI_rect[2]/2), 365))
+		screen.blit(AI_easy, (130, 425))
+		screen.blit(AI_med, (280, 425))
+		screen.blit(AI_hard, (470, 425))
+		screen.blit(text_quit, (screenWidth/2 - (quit_rect[2]/2), 510))
 		screen.blit(logo, (screenWidth/2 - int(logo.get_width()/2),0))
 		pygame.display.update()
 		clock.tick(FPS)

@@ -165,7 +165,7 @@ def drawStartUI():
 		pygame.draw.rect(screen, GREY, pygame.Rect(440, 412, 150, 70), 0, 10)
 		pygame.draw.rect(screen, GREY, pygame.Rect(90, 505, 510, 55), 0, 10)
 
-		#Hover Events
+		#Hover & Click Events
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				pygame.quit()

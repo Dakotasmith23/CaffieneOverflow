@@ -346,11 +346,6 @@ def dropPieceAI(difficulty, board, piece):
 	# Function stub --- to be implemented
 	pass
 
-def printGameHistory():
-	print('GAME HISTORY')
-	for game in game_history:
-		print(game)
-
 def game_loop(gameOver, board):
 	turn = 0
 	

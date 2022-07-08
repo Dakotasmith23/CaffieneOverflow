@@ -60,6 +60,7 @@ screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 validLocation = False
 gameOver = False
+game_history = []
 
 def renderText(text, color, fontSize, font="Helvetica"):
     rFont = pygame.font.SysFont(font, fontSize)
@@ -281,6 +282,7 @@ def game_loop(gameOver, board):
 
 						if winningMove(board, 1):
 							drawMessage("PLAYER 1 WINS!!", RED, WHITE, BLACK)
+							game_history.append(numpy.flip(board, 0))
 							gameOver = True
 					else:
 						turn -= 1
@@ -306,7 +308,10 @@ def game_loop(gameOver, board):
 				turn = turn % 2
 
 				if gameOver:
+					print("GAME HISTORY")
+					print(game_history)
 					pygame.time.wait(3000) 
 					drawStartUI(board, gameOver)
+					
 
 drawStartUI(board, gameOver)

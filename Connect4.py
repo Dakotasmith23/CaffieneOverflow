@@ -173,8 +173,14 @@ def showGameHistory():
 
 	while showingGameHistory:
 		mouse_pos = pygame.mouse.get_pos()
-
 		screen.fill(WHITE)
+
+		if len(game_history) > 0:
+			drawGameHistoryBoard(numpy.flip(game_history[0], 0))
+		else:
+			no_history = renderText("No Games Played", BLACK, 75)
+			nh_rect = no_history.get_rect()
+			screen.blit(no_history, ((screenWidth/2 - (nh_rect[2]/2), 300)))
 
 		back_text = renderText("Go Back", BLACK, 25)
 		pygame.draw.rect(screen, GREY, pygame.Rect(10, 10, 100, 55), 0, 10)
@@ -190,14 +196,7 @@ def showGameHistory():
 		if mouse_pos[0] in range(10, 110) and mouse_pos[1] in range(10, 110):
 			back_text = renderText("Go Back", RED, 25)
 		else:
-			back_text = renderText("Go Back", BLACK, 25)
-
-		if len(game_history) > 0:
-			drawGameHistoryBoard(numpy.flip(game_history[0], 0))
-		else:
-			no_history = renderText("No Games Played", BLACK, 75)
-			nh_rect = no_history.get_rect()
-			screen.blit(no_history, ((screenWidth/2 - (nh_rect[2]/2), 300)))
+			back_text = renderText("Go Back", BLACK, 25)	
 
 		screen.blit(back_text, (20, 20))
 		pygame.display.update()
@@ -249,6 +248,7 @@ def drawStartUI(board, gameOver):
 						gameOver = False
 						game_loop(gameOver, board)
 					else:
+						screen.fill(BLACK)
 						drawBoard(board)
 						game_loop(gameOver, board)
 				elif mouse_pos[0] in range(100, 250) and mouse_pos[1] in range(412, 482):

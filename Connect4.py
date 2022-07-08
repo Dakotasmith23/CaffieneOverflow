@@ -303,6 +303,7 @@ def game_loop(gameOver, board):
 
 						if winningMove(board, 2):
 							drawMessage("PLAYER 2 WINS!!", YELLOW, BLACK, GREY)
+							game_history.append(numpy.flip(board, 0))
 							gameOver = True
 					else:
 						turn -= 1

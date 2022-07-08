@@ -249,6 +249,11 @@ def dropPieceAI(difficulty, board, piece):
 	# Function stub --- to be implemented
 	pass
 
+def printGameHistory():
+	print('GAME HISTORY')
+	for game in game_history:
+		print(game)
+
 def game_loop(gameOver, board):
 	turn = 0
 	
@@ -308,8 +313,6 @@ def game_loop(gameOver, board):
 				turn = turn % 2
 
 				if gameOver:
-					print("GAME HISTORY")
-					print(game_history)
 					pygame.time.wait(3000) 
 					drawStartUI(board, gameOver)
 					

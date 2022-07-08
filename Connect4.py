@@ -1,6 +1,8 @@
 import sys
 import math
 
+from pyparsing import White
+
 try:
 	import numpy
 	import pygame
@@ -134,6 +136,20 @@ def drawBoard(board):
 				pygame.draw.circle(screen, YELLOW, (int(c*SQUARESIZE+SQUARESIZE/2), screenHeight-int(r*SQUARESIZE+SQUARESIZE/2)), RADIUS)
 	pygame.display.update()
 
+def drawGameHistoryBoard(board):
+	for c in range(NUM_COLUMNS):
+		for r in range(NUM_ROWS):
+			pygame.draw.rect(screen, BLUE, (c*SQUARESIZE, r*SQUARESIZE+SQUARESIZE, SQUARESIZE, SQUARESIZE))
+			pygame.draw.circle(screen, BLACK, (int(c*SQUARESIZE+SQUARESIZE/2), int(r*SQUARESIZE+SQUARESIZE+SQUARESIZE/2)), RADIUS)
+	
+	for c in range(NUM_COLUMNS):
+		for r in range(NUM_ROWS):		
+			if board[r][c] == 1:
+				pygame.draw.circle(screen, RED, (int(c*SQUARESIZE+SQUARESIZE/2), screenHeight-int(r*SQUARESIZE+SQUARESIZE/2)), RADIUS)
+			elif board[r][c] == 2: 
+				pygame.draw.circle(screen, YELLOW, (int(c*SQUARESIZE+SQUARESIZE/2), screenHeight-int(r*SQUARESIZE+SQUARESIZE/2)), RADIUS)
+	pygame.display.update()
+
 def drawMessage(message, backgroundColor, foregroundColor, strokeColor):
 	
 	"""Uses pygame's rect and label functionality to create a rectangle with the desired message for ethe user"""
@@ -152,6 +168,40 @@ def drawMessage(message, backgroundColor, foregroundColor, strokeColor):
 		pygame.display.update()
 		time -= 1
 
+def showGameHistory():
+	showingGameHistory = True
+
+	while showingGameHistory:
+		mouse_pos = pygame.mouse.get_pos()
+
+		screen.fill(WHITE)
+
+		back_text = renderText("Go Back", BLACK, 25)
+		pygame.draw.rect(screen, GREY, pygame.Rect(10, 10, 100, 55), 0, 10)
+
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				pygame.quit()
+				sys.exit()
+			if event.type == pygame.MOUSEBUTTONDOWN:
+				if mouse_pos[0] in range(10, 110) and mouse_pos[1] in range(10, 110):
+					showingGameHistory = False
+		
+		if mouse_pos[0] in range(10, 110) and mouse_pos[1] in range(10, 110):
+			back_text = renderText("Go Back", RED, 25)
+		else:
+			back_text = renderText("Go Back", BLACK, 25)
+
+		if len(game_history) > 0:
+			drawGameHistoryBoard(numpy.flip(game_history[0], 0))
+		else:
+			no_history = renderText("No Games Played", BLACK, 75)
+			nh_rect = no_history.get_rect()
+			screen.blit(no_history, ((screenWidth/2 - (nh_rect[2]/2), 300)))
+
+		screen.blit(back_text, (20, 20))
+		pygame.display.update()
+
 def drawStartUI(board, gameOver):
 	"""Draws main menu UI"""
 	menu = True
@@ -168,10 +218,12 @@ def drawStartUI(board, gameOver):
 		AI_easy = renderText("Easy", BLACK, 35)
 		AI_med = renderText("Medium", BLACK, 35)
 		AI_hard = renderText("Hard", BLACK, 35)
+		show_game_history = renderText("Show Game History", BLACK, 35)
 
 		start_rect = text_start.get_rect()
 		quit_rect = text_quit.get_rect()
 		pvAI_rect = p_v_AI.get_rect()
+		sgh_rect = show_game_history.get_rect()
 
 		#Main Menu Rectangles
 		pygame.draw.rect(screen, GREY, pygame.Rect(90, 295, 510, 55), 0, 10)
@@ -180,6 +232,7 @@ def drawStartUI(board, gameOver):
 		pygame.draw.rect(screen, GREY, pygame.Rect(270, 412, 150, 70), 0, 10)
 		pygame.draw.rect(screen, GREY, pygame.Rect(440, 412, 150, 70), 0, 10)
 		pygame.draw.rect(screen, GREY, pygame.Rect(90, 505, 510, 55), 0, 10)
+		pygame.draw.rect(screen, GREY, pygame.Rect(90, 570, 510, 55), 0, 10)
 
 		#Hover & Click Events
 		for event in pygame.event.get():
@@ -200,16 +253,19 @@ def drawStartUI(board, gameOver):
 						game_loop(gameOver, board)
 				elif mouse_pos[0] in range(100, 250) and mouse_pos[1] in range(412, 482):
 					#AI EASY GOES HERE
-					pass
+					pass				
 				elif mouse_pos[0] in range(270, 420) and mouse_pos[1] in range(412, 482):
 					#AI MED GOES HERE
 					pass
 				elif mouse_pos[0] in range(440, 590) and mouse_pos[1] in range(412, 482):
 					#AI HARD GOES HERE
 					pass
-				elif mouse_pos[0] in range(90, 600) and mouse_pos[1] in range(505, 615):
+				elif mouse_pos[0] in range(90, 600) and mouse_pos[1] in range(505, 560):
+					showGameHistory()
+				elif mouse_pos[0] in range(90, 600) and mouse_pos[1] in range(570, 625):
 					pygame.quit()
 					sys.exit()
+				
 
 		if mouse_pos[0] in range(90, 600) and mouse_pos[1] in range(295, 350):
 			text_start = renderText("Player vs Player (Local)", RED, 35)
@@ -227,10 +283,15 @@ def drawStartUI(board, gameOver):
 			AI_hard = renderText("Hard", RED, 35)
 		else:
 			AI_hard = renderText("Hard", BLACK, 35)
-		if mouse_pos[0] in range(90, 600) and mouse_pos[1] in range(505, 615):
+		if mouse_pos[0] in range(90, 600) and mouse_pos[1] in range(505, 560): 
+			show_game_history = renderText("Show Game History", RED, 35)
+		else:
+			show_game_history = renderText("Show Game History", BLACK, 35)
+		if mouse_pos[0] in range(90, 600) and mouse_pos[1] in range(570, 625):
 			text_quit = renderText("Quit", RED, 35)
 		else:
 			text_quit = renderText("Quit", BLACK, 35)
+		
 
 		# Main Menu Text
 		screen.blit(text_start, (screenWidth/2 - (start_rect[2]/2), 300))
@@ -238,7 +299,8 @@ def drawStartUI(board, gameOver):
 		screen.blit(AI_easy, (140, 425))
 		screen.blit(AI_med, (295, 425))
 		screen.blit(AI_hard, (480, 425))
-		screen.blit(text_quit, (screenWidth/2 - (quit_rect[2]/2), 510))
+		screen.blit(show_game_history, (screenWidth/2 - (sgh_rect[2]/2), 510))
+		screen.blit(text_quit, (screenWidth/2 - (quit_rect[2]/2), 575))
 		screen.blit(logo, (screenWidth/2 - int(logo.get_width()/2),0))
 		pygame.display.update()
 		clock.tick(FPS)

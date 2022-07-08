@@ -148,8 +148,7 @@ def drawGameHistoryBoard(board):
 				pygame.draw.circle(screen, RED, (int(c*SQUARESIZE+SQUARESIZE/2), screenHeight-int(r*SQUARESIZE+SQUARESIZE/2)), RADIUS)
 			elif board[r][c] == 2: 
 				pygame.draw.circle(screen, YELLOW, (int(c*SQUARESIZE+SQUARESIZE/2), screenHeight-int(r*SQUARESIZE+SQUARESIZE/2)), RADIUS)
-	pygame.display.update()
-
+	
 def drawMessage(message, backgroundColor, foregroundColor, strokeColor):
 	
 	"""Uses pygame's rect and label functionality to create a rectangle with the desired message for ethe user"""
@@ -170,35 +169,71 @@ def drawMessage(message, backgroundColor, foregroundColor, strokeColor):
 
 def showGameHistory():
 	showingGameHistory = True
+	visbileBoard = 0
 
 	while showingGameHistory:
 		mouse_pos = pygame.mouse.get_pos()
 		screen.fill(WHITE)
 
 		if len(game_history) > 0:
-			drawGameHistoryBoard(numpy.flip(game_history[0], 0))
+			if len(game_history) > 1:
+				#Text
+				prev_text = renderText("<", BLACK, 25)
+				next_text = renderText(">", BLACK, 25)
+				current_board = renderText("Game #" + str(visbileBoard + 1), BLACK, 75)
+				#Rects
+				pygame.draw.rect(screen, GREY, pygame.Rect(screenWidth-120, 20, 50, 55), 0, 10)
+				pygame.draw.rect(screen, GREY, pygame.Rect(screenWidth-60, 20, 50, 55), 0, 10)
+				cb_rect = current_board.get_rect()
+
+				for event in pygame.event.get():
+					if event.type == pygame.QUIT:
+						pygame.quit()
+						sys.exit()
+					if event.type == pygame.MOUSEBUTTONDOWN:
+						if mouse_pos[0] in range(screenWidth-60, screenWidth-10) and mouse_pos[1] in range(20, 75):
+							if visbileBoard < (len(game_history) - 1):
+								visbileBoard += 1
+						if mouse_pos[0] in range(screenWidth-120, screenWidth-70) and mouse_pos[1] in range(20, 75):
+							if visbileBoard > 0:
+									visbileBoard -= 1
+
+				if mouse_pos[0] in range(screenWidth-120, screenWidth-70) and mouse_pos[1] in range(20, 75):
+					prev_text = renderText("<", RED, 25)
+				else:
+					prev_text = renderText("<", BLACK, 25)
+				if mouse_pos[0] in range(screenWidth-60, screenWidth-10) and mouse_pos[1] in range(20, 75):
+					next_text = renderText(">", RED, 25)
+				else:
+					next_text = renderText(">", BLACK, 25)
+				
+				screen.blit(prev_text, (screenWidth-100, 35))
+				screen.blit(next_text, (screenWidth-40, 35))
+				screen.blit(current_board, (screenWidth/2 - (cb_rect[2]/2), 20))
+			
+			drawGameHistoryBoard(numpy.flip(game_history[visbileBoard], 0))
 		else:
 			no_history = renderText("No Games Played", BLACK, 75)
 			nh_rect = no_history.get_rect()
 			screen.blit(no_history, ((screenWidth/2 - (nh_rect[2]/2), 300)))
 
 		back_text = renderText("Go Back", BLACK, 25)
-		pygame.draw.rect(screen, GREY, pygame.Rect(10, 10, 100, 55), 0, 10)
+		pygame.draw.rect(screen, GREY, pygame.Rect(10, 20, 100, 55), 0, 10)
 
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				pygame.quit()
 				sys.exit()
 			if event.type == pygame.MOUSEBUTTONDOWN:
-				if mouse_pos[0] in range(10, 110) and mouse_pos[1] in range(10, 110):
+				if mouse_pos[0] in range(10, 110) and mouse_pos[1] in range(20, 75):
 					showingGameHistory = False
 		
-		if mouse_pos[0] in range(10, 110) and mouse_pos[1] in range(10, 110):
+		if mouse_pos[0] in range(10, 110) and mouse_pos[1] in range(20, 75):
 			back_text = renderText("Go Back", RED, 25)
 		else:
 			back_text = renderText("Go Back", BLACK, 25)	
 
-		screen.blit(back_text, (20, 20))
+		screen.blit(back_text, (20, 30))
 		pygame.display.update()
 
 def drawStartUI(board, gameOver):

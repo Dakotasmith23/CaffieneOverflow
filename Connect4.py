@@ -40,7 +40,7 @@ except ImportError:
 BLUE = (23,107,250)
 BLACK = (0,0,0)
 RED = (255,0,0)
-YELLOW = (255,255,0)
+YELLOW = (254,240,59)
 WHITE = (255, 255, 255)
 GREY = (216,216,216)
 
@@ -126,7 +126,7 @@ def drawBoard(board):
 	for c in range(NUM_COLUMNS):
 		for r in range(NUM_ROWS):
 			pygame.draw.rect(screen, BLUE, (c*SQUARESIZE, r*SQUARESIZE+SQUARESIZE, SQUARESIZE, SQUARESIZE))
-			pygame.draw.circle(screen, BLACK, (int(c*SQUARESIZE+SQUARESIZE/2), int(r*SQUARESIZE+SQUARESIZE+SQUARESIZE/2)), RADIUS)
+			pygame.draw.circle(screen, WHITE, (int(c*SQUARESIZE+SQUARESIZE/2), int(r*SQUARESIZE+SQUARESIZE+SQUARESIZE/2)), RADIUS)
 	
 	for c in range(NUM_COLUMNS):
 		for r in range(NUM_ROWS):		
@@ -140,7 +140,7 @@ def drawGameHistoryBoard(board):
 	for c in range(NUM_COLUMNS):
 		for r in range(NUM_ROWS):
 			pygame.draw.rect(screen, BLUE, (c*SQUARESIZE, r*SQUARESIZE+SQUARESIZE, SQUARESIZE, SQUARESIZE))
-			pygame.draw.circle(screen, BLACK, (int(c*SQUARESIZE+SQUARESIZE/2), int(r*SQUARESIZE+SQUARESIZE+SQUARESIZE/2)), RADIUS)
+			pygame.draw.circle(screen, WHITE, (int(c*SQUARESIZE+SQUARESIZE/2), int(r*SQUARESIZE+SQUARESIZE+SQUARESIZE/2)), RADIUS)
 	
 	for c in range(NUM_COLUMNS):
 		for r in range(NUM_ROWS):		
@@ -278,12 +278,10 @@ def drawStartUI(board, gameOver):
 					if gameOver:
 						board = createBoard()
 						print(board)
-						screen.fill(BLACK)
 						drawBoard(board)
 						gameOver = False
 						game_loop(gameOver, board)
 					else:
-						screen.fill(BLACK)
 						drawBoard(board)
 						game_loop(gameOver, board)
 				elif mouse_pos[0] in range(100, 250) and mouse_pos[1] in range(412, 482):
@@ -348,15 +346,15 @@ def dropPieceAI(difficulty, board, piece):
 
 def game_loop(gameOver, board):
 	turn = 0
+	currentWinner = 0
 	
 	while not gameOver:
-
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				sys.exit()
 
 			if event.type == pygame.MOUSEMOTION:
-				pygame.draw.rect(screen, BLACK, (0,0, screenWidth, SQUARESIZE))
+				pygame.draw.rect(screen, WHITE, (0,0, screenWidth, SQUARESIZE))
 				posx = event.pos[0]
 				if turn == 0:
 					pygame.draw.circle(screen, RED, (posx, int(SQUARESIZE/2)), RADIUS)
@@ -365,7 +363,7 @@ def game_loop(gameOver, board):
 			pygame.display.update()
 
 			if event.type == pygame.MOUSEBUTTONDOWN:
-				pygame.draw.rect(screen, BLACK, (0,0, screenWidth, SQUARESIZE))
+				pygame.draw.rect(screen, WHITE, (0,0, screenWidth, SQUARESIZE))
 				#print(event.pos)
 				# Ask for Player 1 Input
 				if turn == 0:
@@ -378,7 +376,7 @@ def game_loop(gameOver, board):
 						dropPiece(board, row, col, 1)
 
 						if winningMove(board, 1):
-							drawMessage("PLAYER 1 WINS!!", RED, WHITE, BLACK)
+							currentWinner = 1
 							game_history.append(numpy.flip(board, 0))
 							gameOver = True
 					else:
@@ -394,7 +392,7 @@ def game_loop(gameOver, board):
 						dropPiece(board, row, col, 2)
 
 						if winningMove(board, 2):
-							drawMessage("PLAYER 2 WINS!!", YELLOW, BLACK, GREY)
+							currentWinner = 2
 							game_history.append(numpy.flip(board, 0))
 							gameOver = True
 					else:
@@ -406,7 +404,11 @@ def game_loop(gameOver, board):
 				turn = turn % 2
 
 				if gameOver:
-					pygame.time.wait(3000) 
+					if currentWinner == 1:
+						drawMessage("PLAYER 1 WINS!!", RED, WHITE, BLACK)
+					else:
+						drawMessage("PLAYER 2 WINS!!", YELLOW, BLACK, GREY)
+					pygame.time.wait(300) 
 					drawStartUI(board, gameOver)
 					
 

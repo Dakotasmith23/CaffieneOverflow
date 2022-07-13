@@ -38,9 +38,10 @@ except ImportError:
 BLUE = (23,107,250)
 BLACK = (0,0,0)
 RED = (255,0,0)
-YELLOW = (255,255,0)
+YELLOW = (255,241,0)
 WHITE = (255,255,255)
 GRAY = (216,216,216)
+GREEN = (0,255,58)
 
 # Constants
 NUM_ROWS= 6
@@ -181,22 +182,27 @@ def drawStartUI(board, gameOver):
 		logo = pygame.image.load('logo.png')
 		text_start = renderText("Player vs Player (Local)", BLACK, 35)
 		text_quit = renderText("Quit", BLACK, 35)
-		p_v_AI = renderText("Player vs AI", WHITE, 35)
+		p_v_AI = renderText("Player vs AI", BLACK, 35)
 		AI_easy = renderText("Easy", BLACK, 35)
 		AI_med = renderText("Medium", BLACK, 35)
 		AI_hard = renderText("Hard", BLACK, 35)
 
-		start_rect = text_start.get_rect()
-		quit_rect = text_quit.get_rect()
-		pvAI_rect = p_v_AI.get_rect()
-
 		#Main Menu Rectangles
-		pygame.draw.rect(screen, GRAY, pygame.Rect(90, 295, 510, 55), 0, 10)
-		pygame.draw.rect(screen, BLUE, pygame.Rect(90, 355, 510, 145), 0, 10)
-		pygame.draw.rect(screen, GRAY, pygame.Rect(100, 412, 150, 70), 0, 10)
-		pygame.draw.rect(screen, GRAY, pygame.Rect(270, 412, 150, 70), 0, 10)
-		pygame.draw.rect(screen, GRAY, pygame.Rect(440, 412, 150, 70), 0, 10)
-		pygame.draw.rect(screen, GRAY, pygame.Rect(90, 505, 510, 55), 0, 10)
+		background_rect = pygame.Rect(screenWidth*131/1280, screenHeight*433/768, screenWidth*103/128, screenHeight*5/12)
+		player_v_player_l_rect = pygame.Rect(screenWidth*131/512, screenHeight*438/768, screenWidth/2, screenHeight*25/256)
+		player_v_ai_background_rect = pygame.Rect(screenWidth*131/512, screenHeight*518/768, screenWidth/2, screenHeight*50/256)
+		player_v_player_o_rect = pygame.Rect(screenWidth*131/512, screenHeight*673/768, screenWidth/2, screenHeight*25/256)
+		ai_easy_rect = pygame.Rect(screenWidth*285/1024, screenHeight*578/768, screenWidth*135/1024, screenHeight*25/256)
+		ai_med_rect = pygame.Rect(screenWidth*450/1024, screenHeight*578/768, screenWidth*135/1024, screenHeight*25/256)
+		ai_hard_rect = pygame.Rect(screenWidth*615/1024, screenHeight*578/768, screenWidth*135/1024, screenHeight*25/256)
+
+		pygame.draw.rect(screen, YELLOW, background_rect, 0, 10) # Background
+		pygame.draw.rect(screen, RED, player_v_player_l_rect, 0, 10) # Player vs. Player (local)
+		pygame.draw.rect(screen, GREEN, player_v_ai_background_rect, 0, 10) # Player vs. AI background
+		pygame.draw.rect(screen, BLUE, player_v_player_o_rect, 0, 10) # Player vs. Player (online)
+		pygame.draw.rect(screen, GRAY, ai_easy_rect, 0, 10) # AI easy
+		pygame.draw.rect(screen, GRAY, ai_med_rect, 0, 10) # AI medium
+		pygame.draw.rect(screen, GRAY, ai_hard_rect, 0, 10) # AI hard
 
 		#Hover & Click Events
 		for event in pygame.event.get():
@@ -204,7 +210,7 @@ def drawStartUI(board, gameOver):
 				pygame.quit()
 				sys.exit()
 			if event.type == pygame.MOUSEBUTTONDOWN:
-				if mouse_pos[0] in range(90, 600) and mouse_pos[1] in range(295, 350):
+				if mouse_pos[0] in range(player_v_player_l_rect.left, player_v_player_l_rect.right) and mouse_pos[1] in range(player_v_player_l_rect.top, player_v_player_l_rect.bottom):
 					if gameOver:
 						board = createBoard()
 						print(board)
@@ -215,48 +221,48 @@ def drawStartUI(board, gameOver):
 					else:
 						drawBoard(board)
 						game_loop(gameOver, board)
-				elif mouse_pos[0] in range(100, 250) and mouse_pos[1] in range(412, 482):
+				elif mouse_pos[0] in range(ai_easy_rect.left, ai_easy_rect.right) and mouse_pos[1] in range(ai_easy_rect.top, ai_easy_rect.bottom):
 					#AI EASY GOES HERE
 					pass
-				elif mouse_pos[0] in range(270, 420) and mouse_pos[1] in range(412, 482):
+				elif mouse_pos[0] in range(ai_med_rect.left, ai_med_rect.right) and mouse_pos[1] in range(ai_med_rect.top, ai_med_rect.bottom):
 					#AI MED GOES HERE
 					pass
-				elif mouse_pos[0] in range(440, 590) and mouse_pos[1] in range(412, 482):
+				elif mouse_pos[0] in range(ai_hard_rect.left, ai_hard_rect.right) and mouse_pos[1] in range(ai_hard_rect.top, ai_hard_rect.bottom):
 					#AI HARD GOES HERE
 					pass
-				elif mouse_pos[0] in range(90, 600) and mouse_pos[1] in range(505, 615):
+				elif mouse_pos[0] in range(player_v_player_o_rect.left, player_v_player_o_rect.right) and mouse_pos[1] in range(player_v_player_o_rect.top, player_v_player_o_rect.bottom):
 					pygame.quit()
 					sys.exit()
 
-		if mouse_pos[0] in range(90, 600) and mouse_pos[1] in range(295, 350):
-			text_start = renderText("Player vs Player (Local)", RED, 35)
+		if mouse_pos[0] in range(player_v_player_l_rect.left, player_v_player_l_rect.right) and mouse_pos[1] in range(player_v_player_l_rect.top, player_v_player_l_rect.bottom):
+			text_start = renderText("Player vs Player (Local)", WHITE, 35)
 		else:
 			text_start = renderText("Player vs Player (Local)", BLACK, 35)
-		if mouse_pos[0] in range(100, 250) and mouse_pos[1] in range(412, 482):
-			AI_easy = renderText("Easy", RED, 35)
+		if mouse_pos[0] in range(ai_easy_rect.left, ai_easy_rect.right) and mouse_pos[1] in range(ai_easy_rect.top, ai_easy_rect.bottom):
+			AI_easy = renderText("Easy", (0x00,0xA0,0x00), 35)
 		else:
 			AI_easy = renderText("Easy", BLACK, 35)
-		if mouse_pos[0] in range(270, 420) and mouse_pos[1] in range(412, 482):
-			AI_med = renderText("Medium", RED, 35)
+		if mouse_pos[0] in range(ai_med_rect.left, ai_med_rect.right) and mouse_pos[1] in range(ai_med_rect.top, ai_med_rect.bottom):
+			AI_med = renderText("Medium", (0xC7,0xC7,0x00), 35)
 		else:
 			AI_med = renderText("Medium", BLACK, 35)
-		if mouse_pos[0] in range(440, 590) and mouse_pos[1] in range(412, 482):
+		if mouse_pos[0] in range(ai_hard_rect.left, ai_hard_rect.right) and mouse_pos[1] in range(ai_hard_rect.top, ai_hard_rect.bottom):
 			AI_hard = renderText("Hard", RED, 35)
 		else:
 			AI_hard = renderText("Hard", BLACK, 35)
-		if mouse_pos[0] in range(90, 600) and mouse_pos[1] in range(505, 615):
-			text_quit = renderText("Quit", RED, 35)
+		if mouse_pos[0] in range(player_v_player_o_rect.left, player_v_player_o_rect.right) and mouse_pos[1] in range(player_v_player_o_rect.top, player_v_player_o_rect.bottom):
+			text_quit = renderText("Quit", WHITE, 35)
 		else:
 			text_quit = renderText("Quit", BLACK, 35)
 
 		# Main Menu Text
-		screen.blit(text_start, (screenWidth/2 - (start_rect[2]/2), 300))
-		screen.blit(p_v_AI, (screenWidth/2 - (pvAI_rect[2]/2), 365))
-		screen.blit(AI_easy, (140, 425))
-		screen.blit(AI_med, (295, 425))
-		screen.blit(AI_hard, (480, 425))
-		screen.blit(text_quit, (screenWidth/2 - (quit_rect[2]/2), 510))
-		screen.blit(logo, (screenWidth/2 - int(logo.get_width()/2),0))
+		screen.blit(text_start, ((player_v_player_l_rect.centerx - (text_start.get_rect().width/2)), (player_v_player_l_rect.centery - (text_start.get_rect().height/2))))
+		screen.blit(p_v_AI, ((player_v_ai_background_rect.centerx - (p_v_AI.get_rect().width/2)), (player_v_ai_background_rect.y + (p_v_AI.get_rect().height/4))))
+		screen.blit(AI_easy, ((ai_easy_rect.centerx - (AI_easy.get_rect().width/2)), (ai_easy_rect.centery - (AI_easy.get_rect().height/2))))
+		screen.blit(AI_med, ((ai_med_rect.centerx - (AI_med.get_rect().width/2)), (ai_med_rect.centery - (AI_med.get_rect().height/2))))
+		screen.blit(AI_hard, ((ai_hard_rect.centerx - (AI_hard.get_rect().width/2)), (ai_hard_rect.centery - (AI_hard.get_rect().height/2))))
+		screen.blit(text_quit, ((player_v_player_o_rect.centerx - (text_quit.get_rect().width/2)), (player_v_player_o_rect.centery - (text_quit.get_rect().height/2))))
+		screen.blit(logo, (screenWidth/2 - int(logo.get_width()/2),0)) # Todo: Fix logo
 		pygame.display.update()
 		clock.tick(FPS)
 		pygame.display.set_caption("Connect Four")

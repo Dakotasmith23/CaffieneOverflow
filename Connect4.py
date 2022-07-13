@@ -80,6 +80,8 @@ def dropPiece(board, row, col, piece):
 
 def isValidLocation(board, col):
 	"""Returns boolean depending on if the location desired is valid"""
+	if col > 7:
+		return 0
 	return board[NUM_ROWS-1][col] == 0
 
 def getNextOpenRow(board, col):
@@ -269,7 +271,6 @@ def drawStartUI(board, gameOver):
 		AI_easy = renderText("Easy", BLACK, 35)
 		AI_med = renderText("Medium", BLACK, 35)
 		AI_hard = renderText("Hard", BLACK, 35)
-		show_game_history = renderText("Show Game History", BLACK, 35)
 
 		#Main Menu Rectangles
 		background_rect = pygame.Rect(screenWidth*131/1280, screenHeight*433/768, screenWidth*103/128, screenHeight*5/12)
@@ -367,8 +368,14 @@ def game_loop(gameOver, board):
 				sys.exit()
 
 			if event.type == pygame.MOUSEMOTION:
-				pygame.draw.rect(screen, WHITE, (0,0, screenWidth, SQUARESIZE))
 				posx = event.pos[0]
+
+				if ((posx > screenWidth - 250 - PADDING - (SQUARESIZE*3/4))):
+					posx = screenWidth - 250 - PADDING - (SQUARESIZE*3/4)
+				elif (posx < SQUARESIZE*3/4):
+					posx = SQUARESIZE*3/4
+
+				pygame.draw.rect(screen, WHITE, (0,0, screenWidth - 250 - PADDING, SQUARESIZE))
 				if turn == 0:
 					pygame.draw.circle(screen, RED, (posx, int(SQUARESIZE/2)), RADIUS)
 				else: 
@@ -376,12 +383,15 @@ def game_loop(gameOver, board):
 			pygame.display.update()
 
 			if event.type == pygame.MOUSEBUTTONDOWN:
+				if (posx <= PADDING):
+					pass
+
 				pygame.draw.rect(screen, WHITE, (0,0, screenWidth, SQUARESIZE))
 				#print(event.pos)
 				# Ask for Player 1 Input
 				if turn == 0:
 					posx = event.pos[0]
-					col = int(math.floor(posx/SQUARESIZE))
+					col = int(math.floor((posx-PADDING)/(SQUARESIZE+PADDING)))
 
 					if isValidLocation(board, col):
 						print(isValidLocation(board, col)) #debugging
@@ -395,9 +405,9 @@ def game_loop(gameOver, board):
 					else:
 						turn -= 1
 				# Ask for Player 2 Input
-				else:				
+				else:
 					posx = event.pos[0]
-					col = int(math.floor(posx/SQUARESIZE))
+					col = int(math.floor((posx-PADDING)/(SQUARESIZE+PADDING)))
 
 					if isValidLocation(board, col):
 						print(isValidLocation(board, col)) #debugging
@@ -405,7 +415,8 @@ def game_loop(gameOver, board):
 						dropPiece(board, row, col, 2)
 
 						if winningMove(board, 2):
-							drawMessage("PLAYER 2 WINS!!", YELLOW, BLACK, GRAY)
+							currentWinner = 2
+							game_history.append(numpy.flip(board, 0))
 							gameOver = True
 					else:
 						turn -= 1

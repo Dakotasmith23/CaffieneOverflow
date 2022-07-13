@@ -4,6 +4,7 @@ import math
 try:
 	import numpy
 	import pygame
+	from pygame import gfxdraw
 except ImportError:
 	import subprocess
 	import sys
@@ -32,6 +33,10 @@ except ImportError:
 
 	checkRequirements()
 
+# Anti-aliasing (https://stackoverflow.com/questions/23852917/antialiasing-shapes-in-pygame)
+def drawCircle(surface, color, pos, radius):
+	gfxdraw.aacircle(surface, int(pos[0]), int(pos[1]), radius, color)
+	gfxdraw.filled_circle(surface, int(pos[0]), int(pos[1]), radius, color)
 
 # Colors
 BLUE = (23,107,250)
@@ -135,14 +140,14 @@ def drawBoard(board):
 
 	for c in range(NUM_COLUMNS):
 		for r in range(NUM_ROWS):
-			pygame.draw.circle(screen, WHITE, (PADDING + int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), start_vertical + int((r+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2)), RADIUS)
+			drawCircle(screen, WHITE, (PADDING + int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), start_vertical + int((r+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2)), RADIUS)
 	
 	for c in range(NUM_COLUMNS):
 		for r in range(NUM_ROWS):
 			if board[r][c] == 1:
-				pygame.draw.circle(screen, RED, (PADDING + int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), screenHeight-int((r+1)*(SQUARESIZE+PADDING)-SQUARESIZE/2+PADDING)-1), RADIUS)
-			elif board[r][c] == 2: 
-				pygame.draw.circle(screen, YELLOW, (PADDING + int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), screenHeight-int((r+1)*(SQUARESIZE+PADDING)-SQUARESIZE/2+PADDING)-1), RADIUS)
+				drawCircle(screen, RED, (PADDING + int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), screenHeight-int((r+1)*(SQUARESIZE+PADDING)-SQUARESIZE/2+PADDING)-1), RADIUS)
+			elif board[r][c] == 2:
+				drawCircle(screen, YELLOW, (PADDING + int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), screenHeight-int((r+1)*(SQUARESIZE+PADDING)-SQUARESIZE/2+PADDING)-1), RADIUS)
 	drawHistory(board)
 	pygame.display.update()
 
@@ -156,7 +161,7 @@ def drawHistory(board):
 		text = renderText("Player " + str(game_history[i][0]) + "     Row " + str(game_history[i][1] + 1) + " Column " + str(game_history[i][2] + 1), BLACK, 16)
 		location = pygame.Rect(0, history.get_height()*i/56, history.get_width() - 2*PADDING, history.get_height()/56)
 		history.blit(text, (0,(location.centery - (text.get_rect().height/2))))
-		pygame.draw.circle(history, RED if game_history[i][0] == 1 else YELLOW, (67, history.get_height()*i/56 + (text.get_rect().height/2)), 7)
+		drawCircle(history, RED if game_history[i][0] == 1 else YELLOW, (67, history.get_height()*i/56 + (text.get_rect().height/2)), 7)
 
 	screen.blit(history, ((screenWidth - 235),PADDING*2), pygame.Rect(0, 0, 200, 700))
 	pygame.display.update()
@@ -192,13 +197,13 @@ def drawStartUI(board, gameOver):
 		screen.fill(WHITE)
 		
 		#Text Initializer
-		logo = pygame.image.load('logo.png')
 		text_start = renderText("Player vs Player (Local)", BLACK, 35)
 		text_quit = renderText("Quit", BLACK, 35)
 		p_v_AI = renderText("Player vs AI", BLACK, 35)
 		AI_easy = renderText("Easy", BLACK, 35)
 		AI_med = renderText("Medium", BLACK, 35)
 		AI_hard = renderText("Hard", BLACK, 35)
+		title = renderText("Connect 4", BLACK, 120)
 
 		#Main Menu Rectangles
 		background_rect = pygame.Rect(screenWidth*131/1280, screenHeight*433/768, screenWidth*103/128, screenHeight*5/12)
@@ -267,6 +272,24 @@ def drawStartUI(board, gameOver):
 		else:
 			text_quit = renderText("Quit", BLACK, 35)
 
+
+		# Connect 4 Logo
+		logo = pygame.Surface((screenWidth*729/1024, screenHeight*627/768))
+		pygame.Surface.fill(logo, WHITE)
+		pygame.draw.rect(logo, BLUE, (0, 0, logo.get_width(), logo.get_height()), 0, int(RADIUS/2))
+
+		for c in range(NUM_COLUMNS):
+			for r in range(NUM_ROWS):
+				drawCircle(logo, WHITE, (int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), int((r+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2)), RADIUS)
+
+		for c in range(NUM_COLUMNS):
+			for r in range(NUM_ROWS):
+				if board[r][c] == 1:
+					drawCircle(logo, RED, (int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), (logo.get_height() - int((r+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2)) - 1), RADIUS)
+				elif board[r][c] == 2:
+					drawCircle(logo, YELLOW, (int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), (logo.get_height() - int((r+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2)) - 1), RADIUS)
+		pygame.draw.rect(logo, GRAY, (SQUARESIZE, SQUARESIZE, logo.get_width() - (2*SQUARESIZE), (2*SQUARESIZE)), 0, int(RADIUS/2))
+
 		# Main Menu Text
 		screen.blit(text_start, ((player_v_player_l_rect.centerx - (text_start.get_rect().width/2)), (player_v_player_l_rect.centery - (text_start.get_rect().height/2))))
 		screen.blit(p_v_AI, ((player_v_ai_background_rect.centerx - (p_v_AI.get_rect().width/2)), (player_v_ai_background_rect.y + (p_v_AI.get_rect().height/4))))
@@ -274,7 +297,8 @@ def drawStartUI(board, gameOver):
 		screen.blit(AI_med, ((ai_med_rect.centerx - (AI_med.get_rect().width/2)), (ai_med_rect.centery - (AI_med.get_rect().height/2))))
 		screen.blit(AI_hard, ((ai_hard_rect.centerx - (AI_hard.get_rect().width/2)), (ai_hard_rect.centery - (AI_hard.get_rect().height/2))))
 		screen.blit(text_quit, ((player_v_player_o_rect.centerx - (text_quit.get_rect().width/2)), (player_v_player_o_rect.centery - (text_quit.get_rect().height/2))))
-		screen.blit(logo, (screenWidth/2 - int(logo.get_width()/2),0)) # Todo: Fix logo
+		logo.blit(title, ((logo.get_width() - title.get_rect().width)/2, (SQUARESIZE*4 - title.get_rect().height)/2))
+		screen.blit(pygame.transform.smoothscale(logo, (468, 403)), (screenWidth/2 - int(468/2), PADDING))
 		pygame.display.update()
 		clock.tick(FPS)
 		pygame.display.set_caption("Connect Four")
@@ -304,9 +328,9 @@ def game_loop(gameOver, board):
 
 				pygame.draw.rect(screen, WHITE, (0,0, screenWidth - 250 - PADDING, SQUARESIZE))
 				if turn == 0:
-					pygame.draw.circle(screen, RED, (posx, int(SQUARESIZE/2)), RADIUS)
+					drawCircle(screen, RED, (posx, int(SQUARESIZE/2)), RADIUS)
 				else: 
-					pygame.draw.circle(screen, YELLOW, (posx, int(SQUARESIZE/2)), RADIUS)
+					drawCircle(screen, YELLOW, (posx, int(SQUARESIZE/2)), RADIUS)
 			pygame.display.update()
 
 			if event.type == pygame.MOUSEBUTTONDOWN:

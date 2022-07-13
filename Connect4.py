@@ -1,8 +1,6 @@
 import sys
 import math
 
-from pyparsing import White
-
 try:
 	import numpy
 	import pygame

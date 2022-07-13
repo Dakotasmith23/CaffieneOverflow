@@ -85,7 +85,7 @@ def dropPiece(board, row, col, piece):
 
 def isValidLocation(board, col):
 	"""Returns boolean depending on if the location desired is valid"""
-	if col > 7:
+	if col > 6 or col < 0:
 		return 0
 	return board[NUM_ROWS-1][col] == 0
 

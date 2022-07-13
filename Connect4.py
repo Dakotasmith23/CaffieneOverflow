@@ -230,14 +230,10 @@ def drawStartUI(board, gameOver):
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				if mouse_pos[0] in range(player_v_player_l_rect.left, player_v_player_l_rect.right) and mouse_pos[1] in range(player_v_player_l_rect.top, player_v_player_l_rect.bottom):
 					if gameOver:
-						board = createBoard()
-						print(board)
-						drawBoard(board)
 						gameOver = False
-						game_loop(gameOver, board)
-					else:
-						drawBoard(board)
-						game_loop(gameOver, board)
+					board = createBoard()
+					drawBoard(board)
+					game_loop(gameOver, board)
 				elif mouse_pos[0] in range(ai_easy_rect.left, ai_easy_rect.right) and mouse_pos[1] in range(ai_easy_rect.top, ai_easy_rect.bottom):
 					#AI EASY GOES HERE
 					pass
@@ -274,6 +270,16 @@ def drawStartUI(board, gameOver):
 
 
 		# Connect 4 Logo
+		board = [
+			[1, 2, 2, 1, 2, 0, 0],
+			[0, 1, 2, 1, 1, 0, 0],
+			[0, 0, 1, 2, 0, 0, 0],
+			[0, 0, 0, 1, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0],
+		]
+
 		logo = pygame.Surface((screenWidth*729/1024, screenHeight*627/768))
 		pygame.Surface.fill(logo, WHITE)
 		pygame.draw.rect(logo, BLUE, (0, 0, logo.get_width(), logo.get_height()), 0, int(RADIUS/2))

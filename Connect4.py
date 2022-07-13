@@ -9,10 +9,9 @@ except ImportError:
 	import sys
 	import os
 
-	# Tbh this has no business being a function due to the way it needs to be called
 	def checkRequirements():
 		"""Check if the user has the required dependencies, if not, ask to install them"""
-		if os.name == 'nt': # Windoze
+		if os.name == 'nt': # Windows
 			import ctypes
 			MessageBox = ctypes.windll.user32.MessageBoxW
 			result = MessageBox(None, "Missing required modules, do you want to install these?\nThis will take a minute", "Missing Pygame/Numpy", 4)
@@ -25,10 +24,10 @@ except ImportError:
 
 		if result == 6: # User agreed to installation
 			print("Please wait a moment while modules are being installed")
-			#https://pip.pypa.io/en/latest/user_guide/#using-pip-from-your-program
+			# https://pip.pypa.io/en/latest/user_guide/#using-pip-from-your-program
 			subprocess.check_call([sys.executable, "-m", "pip", "install", "pygame"])
 			subprocess.check_call([sys.executable, "-m", "pip", "install", "numpy"])
-			os.startfile(sys.argv[0]) #Restart game
+			os.startfile(sys.argv[0]) # Restart game
 		sys.exit()
 
 	checkRequirements()
@@ -139,9 +138,9 @@ def drawBoard(board):
 			pygame.draw.circle(screen, WHITE, (PADDING + int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), start_vertical + int((r+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2)), RADIUS)
 	
 	for c in range(NUM_COLUMNS):
-		for r in range(NUM_ROWS):		
+		for r in range(NUM_ROWS):
 			if board[r][c] == 1:
-				pygame.draw.circle(screen, RED, (PADDING + int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), screenHeight-int((r+1)*(SQUARESIZE+PADDING)-SQUARESIZE/2+PADDING)-1), RADIUS) #jesus
+				pygame.draw.circle(screen, RED, (PADDING + int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), screenHeight-int((r+1)*(SQUARESIZE+PADDING)-SQUARESIZE/2+PADDING)-1), RADIUS)
 			elif board[r][c] == 2: 
 				pygame.draw.circle(screen, YELLOW, (PADDING + int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), screenHeight-int((r+1)*(SQUARESIZE+PADDING)-SQUARESIZE/2+PADDING)-1), RADIUS)
 	drawHistory(board)

@@ -270,15 +270,16 @@ def drawStartUI(board, gameOver):
 
 
 		# Connect 4 Logo
-		board = [
-			[1, 2, 2, 1, 2, 0, 0],
-			[0, 1, 2, 1, 1, 0, 0],
-			[0, 0, 1, 2, 0, 0, 0],
-			[0, 0, 0, 1, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0],
-		]
+		if not numpy.any(board):
+			board = [
+				[1, 2, 2, 1, 2, 0, 0],
+				[0, 1, 2, 1, 1, 0, 0],
+				[0, 0, 1, 2, 0, 0, 0],
+				[0, 0, 0, 1, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0],
+			]
 
 		logo = pygame.Surface((screenWidth*729/1024, screenHeight*627/768))
 		pygame.Surface.fill(logo, WHITE)

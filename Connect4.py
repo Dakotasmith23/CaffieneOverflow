@@ -76,6 +76,7 @@ def createBoard():
 
 def dropPiece(board, row, col, piece):
 	"""Push the players piece to the specified location"""
+	game_history.append((piece, row, col))
 	board[row][col] = piece
 
 def isValidLocation(board, col):
@@ -148,8 +149,17 @@ def drawBoard(board):
 
 def drawHistory(board):
 	"""Displays game history on a side panel"""
-	# Needs to be implemented
 	pygame.draw.rect(screen, GRAY, ((screenWidth - 250 - PADDING), PADDING, 250, (screenHeight - (2*PADDING))), 0, int(RADIUS/2))
+	history = pygame.Surface((200, 1200))
+	history.fill(GRAY)
+
+	for i in range(len(game_history)):
+		text = renderText("Player " + str(game_history[i][0]) + "     Row " + str(game_history[i][1] + 1) + " Column " + str(game_history[i][2] + 1), BLACK, 16)
+		location = pygame.Rect(0, history.get_height()*i/56, history.get_width() - 2*PADDING, history.get_height()/56)
+		history.blit(text, (0,(location.centery - (text.get_rect().height/2))))
+		pygame.draw.circle(history, RED if game_history[i][0] == 1 else YELLOW, (67, history.get_height()*i/56 + (text.get_rect().height/2)), 7)
+
+	screen.blit(history, ((screenWidth - 235),PADDING*2), pygame.Rect(0, 0, 200, 700))
 	pygame.display.update()
 
 def drawMessage(message, backgroundColor, foregroundColor, strokeColor):
@@ -272,11 +282,13 @@ def drawStartUI(board, gameOver):
 def dropPieceAI(difficulty, board, piece):
 	"""Select the best move determined on the AI difficulty"""
 	# Function stub --- to be implemented
+	# Use dropPiece
 	pass
 
 def game_loop(gameOver, board):
 	turn = 0
 	currentWinner = 0
+	game_history = []
 	
 	while not gameOver:
 		for event in pygame.event.get():

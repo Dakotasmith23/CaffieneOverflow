@@ -183,6 +183,7 @@ def drawMessage(message, backgroundColor, foregroundColor, strokeColor):
 def drawStartUI(board, gameOver):
 	"""Draws main menu UI"""
 	menu = True
+	game_history.clear()
 
 	# Flush previous screen
 	pygame.Surface.fill(screen, WHITE)
@@ -288,7 +289,6 @@ def dropPieceAI(difficulty, board, piece):
 def game_loop(gameOver, board):
 	turn = 0
 	currentWinner = 0
-	game_history = []
 	
 	while not gameOver:
 		for event in pygame.event.get():

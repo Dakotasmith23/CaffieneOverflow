@@ -233,7 +233,7 @@ def drawStartUI(board, gameOver):
 						gameOver = False
 					board = createBoard()
 					drawBoard(board)
-					game_loop(gameOver, board)
+					gameLoop(gameOver, board)
 				elif mouse_pos[0] in range(ai_easy_rect.left, ai_easy_rect.right) and mouse_pos[1] in range(ai_easy_rect.top, ai_easy_rect.bottom):
 					#AI EASY GOES HERE
 					pass
@@ -315,7 +315,7 @@ def dropPieceAI(difficulty, board, piece):
 	# Use dropPiece
 	pass
 
-def game_loop(gameOver, board):
+def gameLoop(gameOver, board):
 	turn = 0
 	currentWinner = 0
 	

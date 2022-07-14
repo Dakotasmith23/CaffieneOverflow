@@ -156,12 +156,29 @@ def drawHistory(board):
 	pygame.draw.rect(screen, GRAY, ((screenWidth - 250 - PADDING), PADDING, 250, (screenHeight - (2*PADDING))), 0, int(RADIUS/2))
 	history = pygame.Surface((200, 1200))
 	history.fill(GRAY)
+	offset = SQUARESIZE*2 + PADDING*3
+
+	miniBoard = pygame.Surface((screenWidth*729/1024, screenHeight*627/768))
+	pygame.Surface.fill(miniBoard, GRAY)
+	for c in range(NUM_COLUMNS):
+		for r in range(NUM_ROWS):
+			drawCircle(miniBoard, WHITE, (int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), int((r+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2)), RADIUS)
+	for c in range(NUM_COLUMNS):
+		for r in range(NUM_ROWS):
+			if board[r][c] == 1:
+				drawCircle(miniBoard, RED, (int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), (miniBoard.get_height() - int((r+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2)) - 1), RADIUS)
+			elif board[r][c] == 2:
+				drawCircle(miniBoard, YELLOW, (int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), (miniBoard.get_height() - int((r+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2)) - 1), RADIUS)
+	history.blit(renderText("Game History", BLACK, 32), (0, 0))
+	history.blit(pygame.transform.smoothscale(miniBoard, (176, 150)), (PADDING, 40))
+	history.blit(renderText("1    2    3    4    5    6    7", BLACK, 16), (PADDING*1.5, offset - (PADDING*2)))
+	history.blit(pygame.transform.rotate(renderText("1    2    3    4    5    6", BLACK, 16), 90), (0, 48))
 
 	for i in range(len(game_history)):
 		text = renderText("Player " + str(game_history[i][0]) + "     Row " + str(game_history[i][1] + 1) + " Column " + str(game_history[i][2] + 1), BLACK, 16)
-		location = pygame.Rect(0, history.get_height()*i/56, history.get_width() - 2*PADDING, history.get_height()/56)
+		location = pygame.Rect(0, history.get_height()*i/56 + offset, history.get_width() - 2*PADDING, history.get_height()/56)
 		history.blit(text, (0,(location.centery - (text.get_rect().height/2))))
-		drawCircle(history, RED if game_history[i][0] == 1 else YELLOW, (67, history.get_height()*i/56 + (text.get_rect().height/2)), 7)
+		drawCircle(history, RED if game_history[i][0] == 1 else YELLOW, (67, history.get_height()*i/56 + (text.get_rect().height/2) + offset + 1), 7)
 
 	screen.blit(history, ((screenWidth - 235),PADDING*2), pygame.Rect(0, 0, 200, 700))
 	pygame.display.update()

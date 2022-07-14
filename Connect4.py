@@ -128,6 +128,9 @@ def winningMove(board, piece):
 			if board[r][c] == piece and board[r-1][c+1] == piece and board[r-2][c+2] == piece and board[r-3][c+3] == piece:
 				return True
 
+def tieGame(board):
+	return numpy.all(board)
+
 def drawBoard(board):
 	"""Uses pygame's draw functionality to display the current board"""
 
@@ -376,6 +379,9 @@ def gameLoop(gameOver, board):
 						if winningMove(board, 1):
 							currentWinner = 1
 							gameOver = True
+						elif tieGame(board):
+							currentWinner = 3
+							gameOver = True
 					else:
 						turn -= 1
 				# Ask for Player 2 Input
@@ -391,6 +397,9 @@ def gameLoop(gameOver, board):
 						if winningMove(board, 2):
 							currentWinner = 2
 							gameOver = True
+						elif tieGame(board):
+							currentWinner = 3
+							gameOver = True
 					else:
 						turn -= 1
 				printBoard(board)
@@ -402,8 +411,10 @@ def gameLoop(gameOver, board):
 				if gameOver:
 					if currentWinner == 1:
 						drawMessage("PLAYER 1 WINS!!", RED, WHITE, BLACK)
-					else:
+					elif currentWinner == 2:
 						drawMessage("PLAYER 2 WINS!!", YELLOW, BLACK, GRAY)
+					elif currentWinner == 3:
+						drawMessage("TIE GAME!!", GREEN, BLACK, GRAY)
 					pygame.time.wait(300) 
 					drawStartUI(board, gameOver)
 					

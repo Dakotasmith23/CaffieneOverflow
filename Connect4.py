@@ -101,9 +101,6 @@ def printBoard(board):
 	"""Prints the array matrix for the user to see their previous game history"""
 	print(numpy.flip(board, 0))
 
-board = createBoard()
-printBoard(board)
-
 def winningMove(board, piece):
 	"""Checks horizonal/vertical/diaganol positions to determine if there is 4 pieces in a row"""
 	# Check horizontal locations for win
@@ -405,23 +402,23 @@ def gameLoop(gameOver, board, mode):
 					elif tieGame(board):
 						currentWinner = 3
 						gameOver = True
+					printBoard(board)
+					drawBoard(board)
 				else:
 					turn -= 1
-				printBoard(board)
-				drawBoard(board)
 
 				turn += 1
 				turn = turn % 2
 
 		if mode and turn: #aka if AI
-			dropPieceAI(mode, board, turn+1)
-			drawBoard(board)
 			if winningMove(board, turn+1):
 				currentWinner = turn+1
 				gameOver = True
 			elif tieGame(board):
 				currentWinner = 3
 				gameOver = True
+			dropPieceAI(mode, board, turn+1)
+			drawBoard(board)
 			turn += 1
 			turn = turn % 2
 
@@ -437,4 +434,4 @@ def gameLoop(gameOver, board, mode):
 			drawStartUI(board, gameOver)
 					
 
-drawStartUI(board, gameOver)
+drawStartUI(createBoard(), gameOver)

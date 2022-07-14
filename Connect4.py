@@ -99,7 +99,15 @@ def getNextOpenRow(board, col):
 
 def printBoard(board):
 	"""Prints the array matrix for the user to see their previous game history"""
-	print(numpy.flip(board, 0))
+	for i in reversed(range(NUM_ROWS)):
+		for j in range(NUM_COLUMNS):
+			if board[i][j] == 1:
+				print("\033[0;31m* ", end = '')
+			elif board[i][j] == 2:
+				print("\033[0;33m* ", end = '')
+			else:
+				print("\033[0;0m* ", end = '')
+		print("\033[1;37m")
 
 def winningMove(board, piece):
 	"""Checks horizonal/vertical/diaganol positions to determine if there is 4 pieces in a row"""
@@ -393,7 +401,6 @@ def gameLoop(gameOver, board, mode):
 
 				if isValidLocation(board, col):
 					pygame.draw.rect(screen, WHITE, (0,0, screenWidth, SQUARESIZE))
-					print(isValidLocation(board, col)) #debugging
 					row = getNextOpenRow(board, col)
 					dropPiece(board, row, col, turn+1)
 					if winningMove(board, turn+1):
@@ -402,6 +409,7 @@ def gameLoop(gameOver, board, mode):
 					elif tieGame(board):
 						currentWinner = 3
 						gameOver = True
+					print("--- TURN " + str(len(game_history)) + " ---")
 					printBoard(board)
 					drawBoard(board)
 				else:
@@ -418,6 +426,8 @@ def gameLoop(gameOver, board, mode):
 				currentWinner = 3
 				gameOver = True
 			dropPieceAI(mode, board, turn+1)
+			print("--- TURN " + str(len(game_history)) + " ---")
+			printBoard(board)
 			drawBoard(board)
 			turn += 1
 			turn = turn % 2

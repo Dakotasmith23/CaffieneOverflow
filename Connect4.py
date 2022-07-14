@@ -1,5 +1,6 @@
 import sys
 import math
+import random
 
 try:
 	import numpy
@@ -256,15 +257,27 @@ def drawStartUI(board, gameOver):
 						gameOver = False
 					board = createBoard()
 					drawBoard(board)
-					gameLoop(gameOver, board)
+					gameLoop(gameOver, board, 0)
 				elif mouse_pos[0] in range(ai_easy_rect.left, ai_easy_rect.right) and mouse_pos[1] in range(ai_easy_rect.top, ai_easy_rect.bottom):
-					#AI EASY GOES HERE
+					if gameOver:
+						gameOver = False
+					board = createBoard()
+					drawBoard(board)
+					gameLoop(gameOver, board, 1)
 					pass
 				elif mouse_pos[0] in range(ai_med_rect.left, ai_med_rect.right) and mouse_pos[1] in range(ai_med_rect.top, ai_med_rect.bottom):
-					#AI MED GOES HERE
+					if gameOver:
+						gameOver = False
+					board = createBoard()
+					drawBoard(board)
+					gameLoop(gameOver, board, 2)
 					pass
 				elif mouse_pos[0] in range(ai_hard_rect.left, ai_hard_rect.right) and mouse_pos[1] in range(ai_hard_rect.top, ai_hard_rect.bottom):
-					#AI HARD GOES HERE
+					if gameOver:
+						gameOver = False
+					board = createBoard()
+					drawBoard(board)
+					gameLoop(gameOver, board, 3)
 					pass
 				elif mouse_pos[0] in range(player_v_player_o_rect.left, player_v_player_o_rect.right) and mouse_pos[1] in range(player_v_player_o_rect.top, player_v_player_o_rect.bottom):
 					pygame.quit()
@@ -335,11 +348,17 @@ def drawStartUI(board, gameOver):
 
 def dropPieceAI(difficulty, board, piece):
 	"""Select the best move determined on the AI difficulty"""
-	# Function stub --- to be implemented
-	# Use dropPiece
-	pass
+	if (difficulty == 1): # Easy
+		col = random.randint(0,6)
+		while (not isValidLocation(board,col)):
+			col = random.randint(0,6)
+		dropPiece(board, getNextOpenRow(board, col), col, piece)
+	elif (difficulty == 2): # Medium
+		pass
+	elif (difficulty == 3): # Hard
+		pass
 
-def gameLoop(gameOver, board):
+def gameLoop(gameOver, board, mode):
 	global history_view
 	turn = 0
 	currentWinner = 0
@@ -373,59 +392,49 @@ def gameLoop(gameOver, board):
 						history_view = 0 if history_view else 1
 					pass
 
-				pygame.draw.rect(screen, WHITE, (0,0, screenWidth, SQUARESIZE))
-				#print(event.pos)
-				# Ask for Player 1 Input
-				if turn == 0:
-					col = int(math.floor((posx-PADDING)/(SQUARESIZE+PADDING)))
+				col = int(math.floor((posx-PADDING)/(SQUARESIZE+PADDING)))
 
-					if isValidLocation(board, col):
-						print(isValidLocation(board, col)) #debugging
-						row = getNextOpenRow(board, col)
-						dropPiece(board, row, col, 1)
-
-						if winningMove(board, 1):
-							currentWinner = 1
-							gameOver = True
-						elif tieGame(board):
-							currentWinner = 3
-							gameOver = True
-					else:
-						turn -= 1
-				# Ask for Player 2 Input
+				if isValidLocation(board, col):
+					pygame.draw.rect(screen, WHITE, (0,0, screenWidth, SQUARESIZE))
+					print(isValidLocation(board, col)) #debugging
+					row = getNextOpenRow(board, col)
+					dropPiece(board, row, col, turn+1)
+					if winningMove(board, turn+1):
+						currentWinner = turn+1
+						gameOver = True
+					elif tieGame(board):
+						currentWinner = 3
+						gameOver = True
 				else:
-					posx = event.pos[0]
-					col = int(math.floor((posx-PADDING)/(SQUARESIZE+PADDING)))
-
-					if isValidLocation(board, col):
-						print(isValidLocation(board, col)) #debugging
-						row = getNextOpenRow(board, col)
-						dropPiece(board, row, col, 2)
-
-						if winningMove(board, 2):
-							currentWinner = 2
-							gameOver = True
-						elif tieGame(board):
-							currentWinner = 3
-							gameOver = True
-					else:
-						turn -= 1
+					turn -= 1
 				printBoard(board)
 				drawBoard(board)
 
 				turn += 1
 				turn = turn % 2
 
-				if gameOver:
-					if currentWinner == 1:
-						drawMessage("PLAYER 1 WINS!!", RED, WHITE, BLACK)
-					elif currentWinner == 2:
-						drawMessage("PLAYER 2 WINS!!", YELLOW, BLACK, GRAY)
-					elif currentWinner == 3:
-						drawMessage("TIE GAME!!", GREEN, BLACK, GRAY)
-					history_view = 0
-					pygame.time.wait(300) 
-					drawStartUI(board, gameOver)
+		if mode and turn: #aka if AI
+			dropPieceAI(mode, board, turn+1)
+			drawBoard(board)
+			if winningMove(board, turn+1):
+				currentWinner = turn+1
+				gameOver = True
+			elif tieGame(board):
+				currentWinner = 3
+				gameOver = True
+			turn += 1
+			turn = turn % 2
+
+		if gameOver:
+			if currentWinner == 1:
+				drawMessage("PLAYER 1 WINS!!", RED, WHITE, BLACK)
+			elif currentWinner == 2:
+				drawMessage("PLAYER 2 WINS!!", YELLOW, BLACK, GRAY)
+			elif currentWinner == 3:
+				drawMessage("TIE GAME!!", GREEN, BLACK, GRAY)
+			history_view = 0
+			pygame.time.wait(300)
+			drawStartUI(board, gameOver)
 					
 
 drawStartUI(board, gameOver)

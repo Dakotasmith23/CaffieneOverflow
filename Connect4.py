@@ -67,6 +67,7 @@ clock = pygame.time.Clock()
 validLocation = False
 gameOver = False
 game_history = []
+history_view = 0
 
 def renderText(text, color, fontSize, font="Helvetica"):
     rFont = pygame.font.SysFont(font, fontSize)
@@ -177,13 +178,15 @@ def drawHistory(board):
 	history.blit(renderText("1    2    3    4    5    6    7", BLACK, 16), (PADDING*1.5, offset - (PADDING*2)))
 	history.blit(pygame.transform.rotate(renderText("1    2    3    4    5    6", BLACK, 16), 90), (0, 48))
 
-	for i in range(len(game_history)):
-		text = renderText("Player " + str(game_history[i][0]) + "     Row " + str(game_history[i][1] + 1) + " Column " + str(game_history[i][2] + 1), BLACK, 16)
+	for i in range(len(game_history) - (22*history_view)):
+		text = renderText("Player " + str(game_history[i + (22*history_view)][0]) + "     Row " + str(game_history[i + (22*history_view)][1] + 1) + " Column " + str(game_history[i + (22*history_view)][2] + 1), BLACK, 16)
 		location = pygame.Rect(0, history.get_height()*i/56 + offset, history.get_width() - 2*PADDING, history.get_height()/56)
 		history.blit(text, (0,(location.centery - (text.get_rect().height/2))))
-		drawCircle(history, RED if game_history[i][0] == 1 else YELLOW, (67, history.get_height()*i/56 + (text.get_rect().height/2) + offset + 1), 7)
+		drawCircle(history, RED if game_history[i + (22*history_view)][0] == 1 else YELLOW, (67, history.get_height()*i/56 + (text.get_rect().height/2) + offset + 1), 7)
 
-	screen.blit(history, ((screenWidth - 235),PADDING*2), pygame.Rect(0, 0, 200, 700))
+	screen.blit(history, ((screenWidth - 235),PADDING*2), pygame.Rect(0, 0, 200, 692))
+	if len(game_history) >= 23:
+		screen.blit(renderText("Click for more", BLACK, 20), ((screenWidth - 235),PADDING*2 + 695))
 	pygame.display.update()
 
 def drawMessage(message, backgroundColor, foregroundColor, strokeColor):
@@ -337,6 +340,7 @@ def dropPieceAI(difficulty, board, piece):
 	pass
 
 def gameLoop(gameOver, board):
+	global history_view
 	turn = 0
 	currentWinner = 0
 	
@@ -361,14 +365,18 @@ def gameLoop(gameOver, board):
 			pygame.display.update()
 
 			if event.type == pygame.MOUSEBUTTONDOWN:
+				posx = event.pos[0]
 				if (posx <= PADDING):
+					pass
+				if (posx >= (screenWidth - 250 - PADDING)): # Clicked on right side of screen
+					if len(game_history) >= 23:
+						history_view = 0 if history_view else 1
 					pass
 
 				pygame.draw.rect(screen, WHITE, (0,0, screenWidth, SQUARESIZE))
 				#print(event.pos)
 				# Ask for Player 1 Input
 				if turn == 0:
-					posx = event.pos[0]
 					col = int(math.floor((posx-PADDING)/(SQUARESIZE+PADDING)))
 
 					if isValidLocation(board, col):
@@ -415,6 +423,7 @@ def gameLoop(gameOver, board):
 						drawMessage("PLAYER 2 WINS!!", YELLOW, BLACK, GRAY)
 					elif currentWinner == 3:
 						drawMessage("TIE GAME!!", GREEN, BLACK, GRAY)
+					history_view = 0
 					pygame.time.wait(300) 
 					drawStartUI(board, gameOver)
 					

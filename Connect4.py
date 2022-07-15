@@ -391,11 +391,11 @@ def gameLoop(gameOver, board, mode):
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				posx = event.pos[0]
 				if (posx <= PADDING):
-					pass
-				if (posx >= (screenWidth - 250 - PADDING)): # Clicked on right side of screen
-					if len(game_history) >= 23:
-						history_view = 0 if history_view else 1
-					pass
+					continue
+				if (posx >= (screenWidth - 250 - PADDING)) and (len(game_history) >= 23): # Clicked on right side of screen
+					history_view = 0 if history_view else 1
+					drawBoard(board)
+					continue
 
 				col = int(math.floor((posx-PADDING)/(SQUARESIZE+PADDING)))
 

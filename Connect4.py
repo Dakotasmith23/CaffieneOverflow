@@ -387,16 +387,15 @@ def gameLoop(gameOver, board, mode):
 					drawCircle(screen, RED, (posx, int(SQUARESIZE/2)), RADIUS)
 				else: 
 					drawCircle(screen, YELLOW, (posx, int(SQUARESIZE/2)), RADIUS)
-			pygame.display.update()
 
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				posx = event.pos[0]
 				if (posx <= PADDING):
-					pass
-				if (posx >= (screenWidth - 250 - PADDING)): # Clicked on right side of screen
-					if len(game_history) >= 23:
-						history_view = 0 if history_view else 1
-					pass
+					continue
+				if (posx >= (screenWidth - 250 - PADDING)) and (len(game_history) >= 23): # Clicked on right side of screen
+					history_view = 0 if history_view else 1
+					drawBoard(board)
+					continue
 
 				col = int(math.floor((posx-PADDING)/(SQUARESIZE+PADDING)))
 
@@ -435,15 +434,37 @@ def gameLoop(gameOver, board, mode):
 			turn += 1
 			turn = turn % 2
 
-		if gameOver:
-			if currentWinner == 1:
-				drawMessage("PLAYER 1 WINS!!", RED, WHITE, BLACK, 2000)
-			elif currentWinner == 2:
-				drawMessage("PLAYER 2 WINS!!", YELLOW, BLACK, GRAY, 2000)
-			elif currentWinner == 3:
-				drawMessage("TIE GAME!!", GREEN, BLACK, GRAY, 2000)
-			history_view = 0
-			drawStartUI(board, gameOver)
+		pygame.display.update()
+
+	if currentWinner == 1:
+		drawMessage("PLAYER 1 WINS!!", RED, WHITE, BLACK, 2000)
+	elif currentWinner == 2:
+		drawMessage("PLAYER 2 WINS!!", YELLOW, BLACK, GRAY, 2000)
+	elif currentWinner == 3:
+		drawMessage("TIE GAME!!", GREEN, BLACK, GRAY, 2000)
+	else:
+		drawMessage("THIS SHOULD NEVER HAPPEN", RED, WHITE, BLACK, 5000)
+
+	results_screen = 1
+	drawBoard(board)
+	screen.blit(renderText("Press any key to return to the menu", BLACK, 48), (PADDING/2, SQUARESIZE/2))
+	pygame.display.update()
+	while results_screen:
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				sys.exit()
+			if event.type == pygame.MOUSEBUTTONDOWN:
+				posx = event.pos[0]
+				if (posx >= (screenWidth - 250 - PADDING)) and (len(game_history) >= 23): # Clicked on right side of screen
+					history_view = 0 if history_view else 1
+					drawBoard(board)
+					screen.blit(renderText("Press any key to return to the menu", BLACK, 48), (PADDING/2, SQUARESIZE/2))
+					pygame.display.update()
+			if event.type == pygame.KEYDOWN:
+				results_screen = 0
+
+	history_view = 0
+	drawStartUI(board, gameOver)
 					
 # Used for ANSI color codes for logging (Windows 10 and higher / Most Linux terminals / Untested on macOS)
 if __import__("platform").system() == "Windows":

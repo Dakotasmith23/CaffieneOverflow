@@ -34,11 +34,6 @@ except ImportError:
 
 	checkRequirements()
 
-# Anti-aliasing (https://stackoverflow.com/questions/23852917/antialiasing-shapes-in-pygame)
-def drawCircle(surface, color, pos, radius):
-	gfxdraw.aacircle(surface, int(pos[0]), int(pos[1]), radius, color)
-	gfxdraw.filled_circle(surface, int(pos[0]), int(pos[1]), radius, color)
-
 # Colors
 BLUE = (23,107,250)
 BLACK = (0,0,0)
@@ -70,8 +65,15 @@ gameOver = False
 game_history = []
 history_view = 0
 
+# Anti-aliasing (https://stackoverflow.com/questions/23852917/antialiasing-shapes-in-pygame)
+def drawCircle(surface, color, pos, radius):
+	"""Draw an anti aliased circle"""
+	gfxdraw.aacircle(surface, int(pos[0]), int(pos[1]), radius, color)
+	gfxdraw.filled_circle(surface, int(pos[0]), int(pos[1]), radius, color)
+
+# Same font for all systems (Because Linux/macOS/Windows ship with different fonts)
 def renderText(text, color, fontSize):
-	# Same font for all systems (Because Linux/macOS/Windows ship with different fonts)
+	"""Load the needed font and return the rendered text object"""
 	rFont = pygame.font.Font('FreeSans.ttf', fontSize)
 	rText = rFont.render(text, True, color)
 	return rText
@@ -137,16 +139,15 @@ def winningMove(board, piece):
 				return True
 
 def tieGame(board):
+	"""Detect if the board is full, thus the game is tied"""
 	return numpy.all(board)
 
 def drawBoard(board):
 	"""Uses pygame's draw functionality to display the current board"""
-
 	# Flush previous screen
 	pygame.Surface.fill(screen, WHITE)
 
 	start_vertical = (screenHeight - (SQUARESIZE*NUM_ROWS + PADDING*(NUM_ROWS+2)))
-
 	pygame.draw.rect(screen, BLUE, (PADDING, start_vertical, (NUM_COLUMNS*(PADDING+SQUARESIZE) + PADDING), (NUM_ROWS*(PADDING+SQUARESIZE) + PADDING)), 0, int(RADIUS/2))
 
 	for c in range(NUM_COLUMNS):
@@ -159,6 +160,7 @@ def drawBoard(board):
 				drawCircle(screen, RED, (PADDING + int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), screenHeight-int((r+1)*(SQUARESIZE+PADDING)-SQUARESIZE/2+PADDING)-1), RADIUS)
 			elif board[r][c] == 2:
 				drawCircle(screen, YELLOW, (PADDING + int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), screenHeight-int((r+1)*(SQUARESIZE+PADDING)-SQUARESIZE/2+PADDING)-1), RADIUS)
+
 	drawHistory(board)
 	pygame.display.update()
 
@@ -197,9 +199,9 @@ def drawHistory(board):
 	pygame.display.update()
 
 def drawMessage(message, backgroundColor, foregroundColor, strokeColor, duration):
-	
 	"""Uses pygame's rect and label functionality to create a rectangle with the desired message for the user"""
 	initial_time = pygame.time.get_ticks()
+
 	while pygame.time.get_ticks() < initial_time + duration:
 		bgRect = pygame.Rect((screenWidth/2 - 250), 250, 500, 200)
 		pygame.draw.rect(screen, backgroundColor, bgRect, 0, 10)
@@ -308,7 +310,6 @@ def drawStartUI(board, gameOver):
 			text_quit = renderText("Quit", WHITE, 35)
 		else:
 			text_quit = renderText("Quit", BLACK, 35)
-
 
 		# Connect 4 Logo
 		if not numpy.any(board):

@@ -151,7 +151,7 @@ def tieGame(board):
 def drawBoard(board):
 	"""Uses pygame's draw functionality to display the current board"""
 	# Flush previous screen
-	pygame.Surface.fill(screen, WHITE)
+	pygame.draw.rect(screen, WHITE, (0,	SQUARESIZE, screenWidth - 250 - PADDING, screenHeight - SQUARESIZE))
 
 	start_vertical = (screenHeight - (SQUARESIZE*NUM_ROWS + PADDING*(NUM_ROWS+2)))
 	pygame.draw.rect(screen, BLUE, (PADDING, start_vertical, (NUM_COLUMNS*(PADDING+SQUARESIZE) + PADDING), (NUM_ROWS*(PADDING+SQUARESIZE) + PADDING)), 0, int(RADIUS/2))
@@ -172,6 +172,7 @@ def drawBoard(board):
 
 def drawHistory(board):
 	"""Displays game history on a side panel"""
+	pygame.draw.rect(screen, WHITE, ((screenWidth - 250 - PADDING), PADDING, 250, (screenHeight - (2*PADDING))))
 	pygame.draw.rect(screen, GRAY, ((screenWidth - 250 - PADDING), PADDING, 250, (screenHeight - (2*PADDING))), 0, int(RADIUS/2))
 	history = pygame.Surface((200, 1200))
 	history.fill(GRAY)

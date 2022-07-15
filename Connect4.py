@@ -196,11 +196,11 @@ def drawHistory(board):
 		screen.blit(renderText("Click for more", BLACK, 20), ((screenWidth - 235),PADDING*2 + 695))
 	pygame.display.update()
 
-def drawMessage(message, backgroundColor, foregroundColor, strokeColor):
+def drawMessage(message, backgroundColor, foregroundColor, strokeColor, duration):
 	
 	"""Uses pygame's rect and label functionality to create a rectangle with the desired message for the user"""
-	time = 3000
-	while time:
+	initial_time = pygame.time.get_ticks()
+	while pygame.time.get_ticks() < initial_time + duration:
 		bgRect = pygame.Rect((screenWidth/2 - 250), 250, 500, 200)
 		pygame.draw.rect(screen, backgroundColor, bgRect, 0, 10)
 		mText = renderText(message, foregroundColor, 55)
@@ -212,7 +212,6 @@ def drawMessage(message, backgroundColor, foregroundColor, strokeColor):
 		screen.blit(mText, (screenWidth/2 - (rText[2]/2), 320))
 		
 		pygame.display.update()
-		time -= 1
 
 def drawStartUI(board, gameOver):
 	"""Draws main menu UI"""
@@ -414,6 +413,8 @@ def gameLoop(gameOver, board, mode):
 					printBoard(board)
 					drawBoard(board)
 				else:
+					drawMessage("Invalid Move!", GREEN, BLACK, GRAY, 800)
+					drawBoard(board)
 					turn -= 1
 
 				turn += 1
@@ -435,13 +436,12 @@ def gameLoop(gameOver, board, mode):
 
 		if gameOver:
 			if currentWinner == 1:
-				drawMessage("PLAYER 1 WINS!!", RED, WHITE, BLACK)
+				drawMessage("PLAYER 1 WINS!!", RED, WHITE, BLACK, 2000)
 			elif currentWinner == 2:
-				drawMessage("PLAYER 2 WINS!!", YELLOW, BLACK, GRAY)
+				drawMessage("PLAYER 2 WINS!!", YELLOW, BLACK, GRAY, 2000)
 			elif currentWinner == 3:
-				drawMessage("TIE GAME!!", GREEN, BLACK, GRAY)
+				drawMessage("TIE GAME!!", GREEN, BLACK, GRAY, 2000)
 			history_view = 0
-			pygame.time.wait(300)
 			drawStartUI(board, gameOver)
 					
 # Used for ANSI color codes for logging (Windows 10 and higher / Most Linux terminals / Untested on macOS)

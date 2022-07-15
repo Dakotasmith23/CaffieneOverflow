@@ -1,6 +1,7 @@
 import sys
 import math
 import random
+import os
 
 try:
 	import numpy
@@ -9,7 +10,6 @@ try:
 except ImportError:
 	import subprocess
 	import sys
-	import os
 
 	def checkRequirements():
 		"""Check if the user has the required dependencies, if not, ask to install them"""
@@ -182,7 +182,7 @@ def drawHistory(board):
 				drawCircle(miniBoard, RED, (int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), (miniBoard.get_height() - int((r+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2)) - 1), RADIUS)
 			elif board[r][c] == 2:
 				drawCircle(miniBoard, YELLOW, (int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), (miniBoard.get_height() - int((r+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2)) - 1), RADIUS)
-	history.blit(renderText("Game History", BLACK, 32), (0, 0))
+	history.blit(renderText("Game History", BLACK, 31 if os.name == 'nt' else 32), (0, 0))
 	history.blit(pygame.transform.smoothscale(miniBoard, (176, 150)), (PADDING, 40))
 	history.blit(renderText("1    2    3    4    5    6    7", BLACK, 16), (PADDING*1.5, offset - (PADDING*2)))
 	history.blit(pygame.transform.rotate(renderText("1    2    3    4    5    6", BLACK, 16), 90), (0, 48))
@@ -447,7 +447,7 @@ def gameLoop(gameOver, board, mode):
 
 	results_screen = 1
 	drawBoard(board)
-	screen.blit(renderText("Press any key to return to the menu", BLACK, 48), (PADDING/2, SQUARESIZE/2))
+	screen.blit(renderText("Press any key to return to the menu", BLACK, 47 if os.name == 'nt' else 48), (PADDING/2, SQUARESIZE/2))
 	pygame.display.update()
 	while results_screen:
 		for event in pygame.event.get():
@@ -458,7 +458,7 @@ def gameLoop(gameOver, board, mode):
 				if (posx >= (screenWidth - 250 - PADDING)) and (len(game_history) >= 23): # Clicked on right side of screen
 					history_view = 0 if history_view else 1
 					drawBoard(board)
-					screen.blit(renderText("Press any key to return to the menu", BLACK, 48), (PADDING/2, SQUARESIZE/2))
+					screen.blit(renderText("Press any key to return to the menu", BLACK, 47 if os.name == 'nt' else 48), (PADDING/2, SQUARESIZE/2))
 					pygame.display.update()
 			if event.type == pygame.KEYDOWN:
 				results_screen = 0
@@ -467,7 +467,7 @@ def gameLoop(gameOver, board, mode):
 	drawStartUI(board, gameOver)
 					
 # Used for ANSI color codes for logging (Windows 10 and higher / Most Linux terminals / Untested on macOS)
-if __import__("platform").system() == "Windows":
+if os.name == 'nt':
 	kernel32 = __import__("ctypes").windll.kernel32
 	kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
 	del kernel32

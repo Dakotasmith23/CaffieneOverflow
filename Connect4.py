@@ -390,35 +390,31 @@ def gameLoop(gameOver, board, mode):
 
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				posx = event.pos[0]
-				if (posx <= PADDING):
-					continue
 				if (posx >= (screenWidth - 250 - PADDING)) and (len(game_history) >= 23): # Clicked on right side of screen
 					history_view = 0 if history_view else 1
 					drawBoard(board)
-					continue
+				elif (posx > PADDING and posx < (screenWidth - 250 - PADDING)):
+					col = int(math.floor((posx-PADDING)/(SQUARESIZE+PADDING)))
+					if isValidLocation(board, col):
+						pygame.draw.rect(screen, WHITE, (0,0, screenWidth, SQUARESIZE))
+						row = getNextOpenRow(board, col)
+						dropPiece(board, row, col, turn+1)
+						if winningMove(board, turn+1):
+							currentWinner = turn+1
+							gameOver = True
+						elif tieGame(board):
+							currentWinner = 3
+							gameOver = True
+						print("--- TURN " + str(len(game_history)) + " ---")
+						printBoard(board)
+						drawBoard(board)
+					else:
+						drawMessage("Invalid Move!", GREEN, BLACK, GRAY, 800)
+						drawBoard(board)
+						turn -= 1
 
-				col = int(math.floor((posx-PADDING)/(SQUARESIZE+PADDING)))
-
-				if isValidLocation(board, col):
-					pygame.draw.rect(screen, WHITE, (0,0, screenWidth, SQUARESIZE))
-					row = getNextOpenRow(board, col)
-					dropPiece(board, row, col, turn+1)
-					if winningMove(board, turn+1):
-						currentWinner = turn+1
-						gameOver = True
-					elif tieGame(board):
-						currentWinner = 3
-						gameOver = True
-					print("--- TURN " + str(len(game_history)) + " ---")
-					printBoard(board)
-					drawBoard(board)
-				else:
-					drawMessage("Invalid Move!", GREEN, BLACK, GRAY, 800)
-					drawBoard(board)
-					turn -= 1
-
-				turn += 1
-				turn = turn % 2
+					turn += 1
+					turn = turn % 2
 
 		if mode and turn: #aka if AI
 			if winningMove(board, turn+1):

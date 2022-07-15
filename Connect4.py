@@ -100,6 +100,12 @@ def getNextOpenRow(board, col):
 		if board[r][col] == 0:
 			return r
 
+# Used for ANSI color codes for logging (Windows 10 and higher / Most Linux terminals / Untested on macOS)
+if os.name == 'nt':
+	kernel32 = __import__("ctypes").windll.kernel32
+	kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
+	del kernel32
+
 def printBoard(board):
 	"""Prints the array matrix for the user to see their previous game history"""
 	for i in reversed(range(NUM_ROWS)):
@@ -461,11 +467,5 @@ def gameLoop(gameOver, board, mode):
 
 	history_view = 0
 	drawStartUI(board, gameOver)
-					
-# Used for ANSI color codes for logging (Windows 10 and higher / Most Linux terminals / Untested on macOS)
-if os.name == 'nt':
-	kernel32 = __import__("ctypes").windll.kernel32
-	kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
-	del kernel32
 
 drawStartUI(createBoard(), gameOver)

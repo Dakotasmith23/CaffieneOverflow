@@ -70,10 +70,11 @@ gameOver = False
 game_history = []
 history_view = 0
 
-def renderText(text, color, fontSize, font="Helvetica"):
-    rFont = pygame.font.SysFont(font, fontSize)
-    rText = rFont.render(text, True, color)
-    return rText
+def renderText(text, color, fontSize):
+	# Same font for all systems (Because Linux/macOS/Windows ship with different fonts)
+	rFont = pygame.font.Font('FreeSans.ttf', fontSize)
+	rText = rFont.render(text, True, color)
+	return rText
 
 def createBoard():
 	"""Creates an empty numpy array matrix of NUM_ROWS and NUM_COLUMNS"""
@@ -188,7 +189,7 @@ def drawHistory(board):
 		text = renderText("Player " + str(game_history[i + (22*history_view)][0]) + "     Row " + str(game_history[i + (22*history_view)][1] + 1) + " Column " + str(game_history[i + (22*history_view)][2] + 1), BLACK, 16)
 		location = pygame.Rect(0, history.get_height()*i/56 + offset, history.get_width() - 2*PADDING, history.get_height()/56)
 		history.blit(text, (0,(location.centery - (text.get_rect().height/2))))
-		drawCircle(history, RED if game_history[i + (22*history_view)][0] == 1 else YELLOW, (67, history.get_height()*i/56 + (text.get_rect().height/2) + offset + 1), 7)
+		drawCircle(history, RED if game_history[i + (22*history_view)][0] == 1 else YELLOW, (67, history.get_height()*i/56 + (text.get_rect().height/2) + offset), 7)
 
 	screen.blit(history, ((screenWidth - 235),PADDING*2), pygame.Rect(0, 0, 200, 692))
 	if len(game_history) >= 23:
@@ -443,5 +444,10 @@ def gameLoop(gameOver, board, mode):
 			pygame.time.wait(300)
 			drawStartUI(board, gameOver)
 					
+# Used for ANSI color codes for logging (Windows 10 and higher / Most Linux terminals / Untested on macOS)
+if __import__("platform").system() == "Windows":
+	kernel32 = __import__("ctypes").windll.kernel32
+	kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
+	del kernel32
 
 drawStartUI(createBoard(), gameOver)

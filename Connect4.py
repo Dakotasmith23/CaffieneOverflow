@@ -34,11 +34,6 @@ except ImportError:
 
 	checkRequirements()
 
-# Anti-aliasing (https://stackoverflow.com/questions/23852917/antialiasing-shapes-in-pygame)
-def drawCircle(surface, color, pos, radius):
-	gfxdraw.aacircle(surface, int(pos[0]), int(pos[1]), radius, color)
-	gfxdraw.filled_circle(surface, int(pos[0]), int(pos[1]), radius, color)
-
 # Colors
 BLUE = (23,107,250)
 BLACK = (0,0,0)
@@ -70,10 +65,18 @@ gameOver = False
 game_history = []
 history_view = 0
 
-def renderText(text, color, fontSize, font="Helvetica"):
-    rFont = pygame.font.SysFont(font, fontSize)
-    rText = rFont.render(text, True, color)
-    return rText
+# Anti-aliasing (https://stackoverflow.com/questions/23852917/antialiasing-shapes-in-pygame)
+def drawCircle(surface, color, pos, radius):
+	"""Draw an anti aliased circle"""
+	gfxdraw.aacircle(surface, int(pos[0]), int(pos[1]), radius, color)
+	gfxdraw.filled_circle(surface, int(pos[0]), int(pos[1]), radius, color)
+
+# Same font for all systems (Because Linux/macOS/Windows ship with different fonts)
+def renderText(text, color, fontSize):
+	"""Load the needed font and return the rendered text object"""
+	rFont = pygame.font.Font('FreeSans.ttf', fontSize)
+	rText = rFont.render(text, True, color)
+	return rText
 
 def createBoard():
 	"""Creates an empty numpy array matrix of NUM_ROWS and NUM_COLUMNS"""
@@ -99,10 +102,15 @@ def getNextOpenRow(board, col):
 
 def printBoard(board):
 	"""Prints the array matrix for the user to see their previous game history"""
-	print(numpy.flip(board, 0))
-
-board = createBoard()
-printBoard(board)
+	for i in reversed(range(NUM_ROWS)):
+		for j in range(NUM_COLUMNS):
+			if board[i][j] == 1:
+				print("\033[0;31m* ", end = '')
+			elif board[i][j] == 2:
+				print("\033[0;33m* ", end = '')
+			else:
+				print("\033[0;0m* ", end = '')
+		print("\033[1;37m")
 
 def winningMove(board, piece):
 	"""Checks horizonal/vertical/diaganol positions to determine if there is 4 pieces in a row"""
@@ -131,16 +139,15 @@ def winningMove(board, piece):
 				return True
 
 def tieGame(board):
+	"""Detect if the board is full, thus the game is tied"""
 	return numpy.all(board)
 
 def drawBoard(board):
 	"""Uses pygame's draw functionality to display the current board"""
-
 	# Flush previous screen
 	pygame.Surface.fill(screen, WHITE)
 
 	start_vertical = (screenHeight - (SQUARESIZE*NUM_ROWS + PADDING*(NUM_ROWS+2)))
-
 	pygame.draw.rect(screen, BLUE, (PADDING, start_vertical, (NUM_COLUMNS*(PADDING+SQUARESIZE) + PADDING), (NUM_ROWS*(PADDING+SQUARESIZE) + PADDING)), 0, int(RADIUS/2))
 
 	for c in range(NUM_COLUMNS):
@@ -153,6 +160,7 @@ def drawBoard(board):
 				drawCircle(screen, RED, (PADDING + int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), screenHeight-int((r+1)*(SQUARESIZE+PADDING)-SQUARESIZE/2+PADDING)-1), RADIUS)
 			elif board[r][c] == 2:
 				drawCircle(screen, YELLOW, (PADDING + int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), screenHeight-int((r+1)*(SQUARESIZE+PADDING)-SQUARESIZE/2+PADDING)-1), RADIUS)
+
 	drawHistory(board)
 	pygame.display.update()
 
@@ -183,18 +191,18 @@ def drawHistory(board):
 		text = renderText("Player " + str(game_history[i + (22*history_view)][0]) + "     Row " + str(game_history[i + (22*history_view)][1] + 1) + " Column " + str(game_history[i + (22*history_view)][2] + 1), BLACK, 16)
 		location = pygame.Rect(0, history.get_height()*i/56 + offset, history.get_width() - 2*PADDING, history.get_height()/56)
 		history.blit(text, (0,(location.centery - (text.get_rect().height/2))))
-		drawCircle(history, RED if game_history[i + (22*history_view)][0] == 1 else YELLOW, (67, history.get_height()*i/56 + (text.get_rect().height/2) + offset + 1), 7)
+		drawCircle(history, RED if game_history[i + (22*history_view)][0] == 1 else YELLOW, (67, history.get_height()*i/56 + (text.get_rect().height/2) + offset), 7)
 
 	screen.blit(history, ((screenWidth - 235),PADDING*2), pygame.Rect(0, 0, 200, 692))
 	if len(game_history) >= 23:
 		screen.blit(renderText("Click for more", BLACK, 20), ((screenWidth - 235),PADDING*2 + 695))
 	pygame.display.update()
 
-def drawMessage(message, backgroundColor, foregroundColor, strokeColor):
-	
+def drawMessage(message, backgroundColor, foregroundColor, strokeColor, duration):
 	"""Uses pygame's rect and label functionality to create a rectangle with the desired message for the user"""
-	time = 3000
-	while time:
+	initial_time = pygame.time.get_ticks()
+
+	while pygame.time.get_ticks() < initial_time + duration:
 		bgRect = pygame.Rect((screenWidth/2 - 250), 250, 500, 200)
 		pygame.draw.rect(screen, backgroundColor, bgRect, 0, 10)
 		mText = renderText(message, foregroundColor, 55)
@@ -206,7 +214,6 @@ def drawMessage(message, backgroundColor, foregroundColor, strokeColor):
 		screen.blit(mText, (screenWidth/2 - (rText[2]/2), 320))
 		
 		pygame.display.update()
-		time -= 1
 
 def drawStartUI(board, gameOver):
 	"""Draws main menu UI"""
@@ -304,7 +311,6 @@ def drawStartUI(board, gameOver):
 		else:
 			text_quit = renderText("Quit", BLACK, 35)
 
-
 		# Connect 4 Logo
 		if not numpy.any(board):
 			board = [
@@ -396,7 +402,6 @@ def gameLoop(gameOver, board, mode):
 
 				if isValidLocation(board, col):
 					pygame.draw.rect(screen, WHITE, (0,0, screenWidth, SQUARESIZE))
-					print(isValidLocation(board, col)) #debugging
 					row = getNextOpenRow(board, col)
 					dropPiece(board, row, col, turn+1)
 					if winningMove(board, turn+1):
@@ -405,36 +410,45 @@ def gameLoop(gameOver, board, mode):
 					elif tieGame(board):
 						currentWinner = 3
 						gameOver = True
+					print("--- TURN " + str(len(game_history)) + " ---")
+					printBoard(board)
+					drawBoard(board)
 				else:
+					drawMessage("Invalid Move!", GREEN, BLACK, GRAY, 800)
+					drawBoard(board)
 					turn -= 1
-				printBoard(board)
-				drawBoard(board)
 
 				turn += 1
 				turn = turn % 2
 
 		if mode and turn: #aka if AI
-			dropPieceAI(mode, board, turn+1)
-			drawBoard(board)
 			if winningMove(board, turn+1):
 				currentWinner = turn+1
 				gameOver = True
 			elif tieGame(board):
 				currentWinner = 3
 				gameOver = True
+			dropPieceAI(mode, board, turn+1)
+			print("--- TURN " + str(len(game_history)) + " ---")
+			printBoard(board)
+			drawBoard(board)
 			turn += 1
 			turn = turn % 2
 
 		if gameOver:
 			if currentWinner == 1:
-				drawMessage("PLAYER 1 WINS!!", RED, WHITE, BLACK)
+				drawMessage("PLAYER 1 WINS!!", RED, WHITE, BLACK, 2000)
 			elif currentWinner == 2:
-				drawMessage("PLAYER 2 WINS!!", YELLOW, BLACK, GRAY)
+				drawMessage("PLAYER 2 WINS!!", YELLOW, BLACK, GRAY, 2000)
 			elif currentWinner == 3:
-				drawMessage("TIE GAME!!", GREEN, BLACK, GRAY)
+				drawMessage("TIE GAME!!", GREEN, BLACK, GRAY, 2000)
 			history_view = 0
-			pygame.time.wait(300)
 			drawStartUI(board, gameOver)
 					
+# Used for ANSI color codes for logging (Windows 10 and higher / Most Linux terminals / Untested on macOS)
+if __import__("platform").system() == "Windows":
+	kernel32 = __import__("ctypes").windll.kernel32
+	kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
+	del kernel32
 
-drawStartUI(board, gameOver)
+drawStartUI(createBoard(), gameOver)

@@ -159,7 +159,7 @@ def drawBoard(board):
 	for c in range(NUM_COLUMNS):
 		for r in range(NUM_ROWS):
 			drawCircle(screen, WHITE, (PADDING + int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), start_vertical + int((r+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2)), RADIUS)
-	
+
 	for c in range(NUM_COLUMNS):
 		for r in range(NUM_ROWS):
 			if board[r][c] == 1:
@@ -475,7 +475,7 @@ def gameLoop(gameOver, board, mode):
 	global history_view
 	turn = 0
 	currentWinner = 0
-	
+
 	while not gameOver:
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
@@ -545,8 +545,6 @@ def gameLoop(gameOver, board, mode):
 		drawMessage("PLAYER 2 WINS!!", YELLOW, BLACK, GRAY, 2000)
 	elif currentWinner == 3:
 		drawMessage("TIE GAME!!", GREEN, BLACK, GRAY, 2000)
-	else:
-		drawMessage("THIS SHOULD NEVER HAPPEN", RED, WHITE, BLACK, 5000)
 
 	results_screen = 1
 	drawBoard(board)

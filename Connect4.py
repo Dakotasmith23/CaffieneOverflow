@@ -477,7 +477,7 @@ def gameLoop(gameOver, board, mode):
 					turn += 1
 					turn = turn % 2
 
-		if mode and turn: #aka if AI
+		if mode and turn and not currentWinner: #aka if AI
 			dropPieceAI(mode, board, turn+1)
 			print("--- TURN " + str(len(game_history)) + " ---")
 			printBoard(board)

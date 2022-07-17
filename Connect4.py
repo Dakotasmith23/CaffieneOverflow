@@ -366,8 +366,62 @@ def dropPieceAI(difficulty, board, piece):
 		while (not isValidLocation(board,col)):
 			col = random.randint(0,6)
 		dropPiece(board, getNextOpenRow(board, col), col, piece)
+
 	elif (difficulty == 2): # Medium
-		pass
+
+		# Pick a random location sometimes even when a win should be given
+		if (random.randint(0,1)):
+			c = random.randint(0,6)
+			while (not isValidLocation(board,c)):
+				c = random.randint(0,6)
+			dropPiece(board, getNextOpenRow(board, c), c, piece)
+			return
+
+		# Check horizontal locations
+		for c in range(NUM_COLUMNS-3):
+			for r in range(NUM_ROWS):
+				if board[r][c] == 0 and getNextOpenRow(board, c) == r and board[r][c+1] == 1 and board[r][c+2] == 1 and board[r][c+3] == 1:
+					dropPiece(board, r, c, piece)
+					return
+				elif board[r][c] == 1 and board[r][c+1] == 0 and getNextOpenRow(board, c+1) == r and board[r][c+2] == 1 and board[r][c+3] == 1:
+					dropPiece(board, r, c+1, piece)
+					return
+				elif board[r][c] == 1 and board[r][c+1] == 1 and board[r][c+2] == 0 and getNextOpenRow(board, c+2) == r and board[r][c+3] == 1:
+					dropPiece(board, r, c+2, piece)
+					return
+				elif board[r][c] == 1 and board[r][c+1] == 1 and board[r][c+2] == 1 and board[r][c+3] == 0 and getNextOpenRow(board, c+3) == r:
+					dropPiece(board, r, c+3, piece)
+					return
+
+		# Check vertical locations
+		for c in range(NUM_COLUMNS):
+			for r in range(NUM_ROWS-3):
+				if board[r][c] == 1 and board[r+1][c] == 1 and board[r+2][c] == 1 and board[r+3][c] == 0:
+					dropPiece(board, r+3, c, piece)
+					return
+
+		# Check diaganols
+		for c in range(NUM_COLUMNS-3):
+			for r in range(NUM_ROWS-3):
+				if board[r][c] == 0 and getNextOpenRow(board, c) == r and board[r+1][c+1] == 1 and board[r+2][c+2] == 1 and board[r+3][c+3] == 1:
+					dropPiece(board, r, c, piece)
+					return
+				elif board[r][c] == 1 and board[r+1][c+1] == 0 and getNextOpenRow(board, c+1) == r+1 and board[r+2][c+2] == 1 and board[r+3][c+3] == 1:
+					dropPiece(board, r+1, c+1, piece)
+					return
+				elif board[r][c] == 1 and board[r+1][c+1] == 1 and board[r+2][c+2] == 0 and getNextOpenRow(board, c+2) == r+2 and board[r+3][c+3] == 1:
+					dropPiece(board, r+2, c+2, piece)
+					return
+				elif board[r][c] == 1 and board[r+1][c+1] == 1 and board[r+2][c+2] == 1 and board[r+3][c+3] == 0 and getNextOpenRow(board, c+3) == r+3:
+					dropPiece(board, r+3, c+3, piece)
+					return
+
+		# If not blocking opponent, pick a random location
+		c = random.randint(0,6)
+		while (not isValidLocation(board,c)):
+			c = random.randint(0,6)
+		dropPiece(board, getNextOpenRow(board, c), c, piece)
+
 	elif (difficulty == 3): # Hard
 		pass
 

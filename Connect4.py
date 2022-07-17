@@ -424,16 +424,16 @@ def gameLoop(gameOver, board, mode):
 					turn = turn % 2
 
 		if mode and turn: #aka if AI
+			dropPieceAI(mode, board, turn+1)
+			print("--- TURN " + str(len(game_history)) + " ---")
+			printBoard(board)
+			drawBoard(board)
 			if winningMove(board, turn+1):
 				currentWinner = turn+1
 				gameOver = True
 			elif tieGame(board):
 				currentWinner = 3
 				gameOver = True
-			dropPieceAI(mode, board, turn+1)
-			print("--- TURN " + str(len(game_history)) + " ---")
-			printBoard(board)
-			drawBoard(board)
 			turn += 1
 			turn = turn % 2
 

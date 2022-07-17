@@ -367,10 +367,10 @@ def dropPieceAI(difficulty, board, piece):
 			col = random.randint(0,6)
 		dropPiece(board, getNextOpenRow(board, col), col, piece)
 
-	elif (difficulty == 2): # Medium
+	elif (difficulty == 2): # Medium (Block winning moves)
 
 		# Pick a random location sometimes even when a win should be given
-		if (random.randint(0,1)):
+		if (random.randint(0,2) == 1):
 			c = random.randint(0,6)
 			while (not isValidLocation(board,c)):
 				c = random.randint(0,6)
@@ -422,8 +422,54 @@ def dropPieceAI(difficulty, board, piece):
 			c = random.randint(0,6)
 		dropPiece(board, getNextOpenRow(board, c), c, piece)
 
-	elif (difficulty == 3): # Hard
-		pass
+	elif (difficulty == 3): # Hard (Finish moves and block others)
+
+		# Finish then block player
+		for p in range(2,0,-1):
+			# Check horizontal locations
+			for c in range(NUM_COLUMNS-3):
+				for r in range(NUM_ROWS):
+					if not board[r][c] and getNextOpenRow(board, c) == r and board[r][c+1] == p and board[r][c+2] == p and board[r][c+3] == p:
+						dropPiece(board, r, c, piece)
+						return
+					elif board[r][c] == p and not board[r][c+1] and getNextOpenRow(board, c+1) == r and board[r][c+2] == p and board[r][c+3] == p:
+						dropPiece(board, r, c+1, piece)
+						return
+					elif board[r][c] == p and board[r][c+1] == p and not board[r][c+2] and getNextOpenRow(board, c+2) == r and board[r][c+3] == p:
+						dropPiece(board, r, c+2, piece)
+						return
+					elif board[r][c] == p and board[r][c+1] == p and board[r][c+2] == p and not board[r][c+3] and getNextOpenRow(board, c+3) == r:
+						dropPiece(board, r, c+3, piece)
+						return
+
+			# Check vertical locations
+			for c in range(NUM_COLUMNS):
+				for r in range(NUM_ROWS-3):
+					if board[r][c] == p and board[r+1][c] == p and board[r+2][c] == p and not board[r+3][c]:
+						dropPiece(board, r+3, c, piece)
+						return
+
+			# Check diaganols
+			for c in range(NUM_COLUMNS-3):
+				for r in range(NUM_ROWS-3):
+					if not board[r][c] and getNextOpenRow(board, c) == r and board[r+1][c+1] == p and board[r+2][c+2] == p and board[r+3][c+3] == p:
+						dropPiece(board, r, c, piece)
+						return
+					elif board[r][c] == p and not board[r+1][c+1] and getNextOpenRow(board, c+1) == r+1 and board[r+2][c+2] == p and board[r+3][c+3] == p:
+						dropPiece(board, r+1, c+1, piece)
+						return
+					elif board[r][c] == p and board[r+1][c+1] == p and not board[r+2][c+2] and getNextOpenRow(board, c+2) == r+2 and board[r+3][c+3] == p:
+						dropPiece(board, r+2, c+2, piece)
+						return
+					elif board[r][c] == p and board[r+1][c+1] == p and board[r+2][c+2] == p and not board[r+3][c+3] and getNextOpenRow(board, c+3) == r+3:
+						dropPiece(board, r+3, c+3, piece)
+						return
+
+		# Pick a random location
+		c = random.randint(0,6)
+		while (not isValidLocation(board,c)):
+			c = random.randint(0,6)
+		dropPiece(board, getNextOpenRow(board, c), c, piece)
 
 def gameLoop(gameOver, board, mode):
 	global history_view

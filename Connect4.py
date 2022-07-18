@@ -2,6 +2,7 @@ import sys
 import math
 import random
 import os
+import ctypes
 
 try:
 	import numpy
@@ -57,6 +58,7 @@ size = (screenWidth, screenHeight)
 RADIUS = int(SQUARESIZE/2 - 5)
 
 # Initialization
+ctypes.windll.shcore.SetProcessDpiAwareness(1)
 pygame.init()
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()

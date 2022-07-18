@@ -300,8 +300,7 @@ def drawStartUI(board, gameOver):
 					gameLoop(gameOver, board, 3)
 					pass
 				elif mouse_pos[0] in range(player_v_player_o_rect.left, player_v_player_o_rect.right) and mouse_pos[1] in range(player_v_player_o_rect.top, player_v_player_o_rect.bottom):
-					pygame.quit()
-					sys.exit()
+					menu = False
 
 		if mouse_pos[0] in range(player_v_player_l_rect.left, player_v_player_l_rect.right) and mouse_pos[1] in range(player_v_player_l_rect.top, player_v_player_l_rect.bottom):
 			text_start = renderText("Player vs Player (Local)", WHITE, 35)
@@ -565,6 +564,7 @@ def gameLoop(gameOver, board, mode):
 				if (posx >= (screenWidth - 250 - PADDING)) and (len(game_history) >= 23): # Clicked on right side of screen
 					history_view = 0 if history_view else 1
 					drawBoard(board)
+					screen.draw.rect
 					screen.blit(renderText("Press any key to return to the menu", BLACK, 47 if os.name == 'nt' else 48), (PADDING/2, SQUARESIZE/2))
 					pygame.display.update()
 			if event.type == pygame.KEYDOWN:

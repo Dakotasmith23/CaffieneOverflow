@@ -564,7 +564,7 @@ def gameLoop(gameOver, board, mode):
 				if (posx >= (screenWidth - 250 - PADDING)) and (len(game_history) >= 23): # Clicked on right side of screen
 					history_view = 0 if history_view else 1
 					drawBoard(board)
-					screen.draw.rect
+					pygame.draw.rect(screen, WHITE, (0,0, screenWidth - 250 - PADDING, SQUARESIZE*1))
 					screen.blit(renderText("Press any key to return to the menu", BLACK, 47 if os.name == 'nt' else 48), (PADDING/2, SQUARESIZE/2))
 					pygame.display.update()
 			if event.type == pygame.KEYDOWN:

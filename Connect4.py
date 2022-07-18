@@ -63,6 +63,14 @@ screenHeight = 768
 size = (screenWidth, screenHeight)
 RADIUS = int(SQUARESIZE/2 - 5)
 
+
+# Windows tweaks for ANSI escape codes and DPI scaling
+if os.name == 'nt':
+	ctypes = __import__('ctypes')
+	ctypes.windll.shcore.SetProcessDpiAwareness(1)
+	ctypes.windll.kernel32.SetConsoleMode(ctypes.windll.kernel32.GetStdHandle(-11), 7)
+	del ctypes
+
 # Initialization
 pygame.init()
 screen = pygame.display.set_mode(size)
@@ -106,12 +114,6 @@ def getNextOpenRow(board, col):
 	for r in range(NUM_ROWS):
 		if board[r][col] == 0:
 			return r
-
-# Used for ANSI color codes for logging (Windows 10 and higher / Most Linux terminals / Untested on macOS)
-if os.name == 'nt':
-	kernel32 = __import__("ctypes").windll.kernel32
-	kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
-	del kernel32
 
 def printBoard(board):
 	"""Prints the array matrix for the user to see their previous game history"""

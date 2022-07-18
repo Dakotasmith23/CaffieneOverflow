@@ -263,8 +263,7 @@ def drawStartUI(board, gameOver):
 		#Hover & Click Events
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
-				pygame.quit()
-				sys.exit()
+				menu = False
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				if mouse_pos[0] in range(player_v_player_l_rect.left, player_v_player_l_rect.right) and mouse_pos[1] in range(player_v_player_l_rect.top, player_v_player_l_rect.bottom):
 					if gameOver:
@@ -568,3 +567,7 @@ def gameLoop(gameOver, board, mode):
 	drawStartUI(board, gameOver)
 
 drawStartUI(createBoard(), gameOver)
+
+# Deinit
+pygame.quit()
+sys.exit()

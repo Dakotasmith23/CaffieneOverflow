@@ -208,7 +208,7 @@ def drawHistory(board):
 				drawCircle(miniBoard, RED, (int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), (miniBoard.get_height() - int((r+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2)) - 1), RADIUS)
 			elif board[r][c] == 2:
 				drawCircle(miniBoard, YELLOW, (int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), (miniBoard.get_height() - int((r+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2)) - 1), RADIUS)
-	history.blit(renderText("Game History", BLACK, 31 if os.name == 'nt' else 32), (0, 0))
+	history.blit(renderText("Game History", BLACK, 32 if sys.platform == 'linux' else 31), (0, 0))
 	history.blit(pygame.transform.smoothscale(miniBoard, (176, 150)), (PADDING, 40))
 	history.blit(renderText("1    2    3    4    5    6    7", BLACK, 16), (PADDING*1.5, offset - (PADDING*2)))
 	history.blit(pygame.transform.rotate(renderText("1    2    3    4    5    6", BLACK, 16), 90), (0, 48))
@@ -568,7 +568,7 @@ def gameLoop(gameOver, board, mode):
 
 	results_screen = 1
 	drawBoard(board)
-	screen.blit(renderText("Press any key to return to the menu", BLACK, 47 if os.name == 'nt' else 48), (PADDING/2, SQUARESIZE/2))
+	screen.blit(renderText("Press any key to return to the menu", BLACK, 48 if sys.platform == "linux" else 47), (PADDING/2, SQUARESIZE/2))
 	pygame.display.update()
 	while results_screen:
 		for event in pygame.event.get():
@@ -580,7 +580,7 @@ def gameLoop(gameOver, board, mode):
 					history_view = 0 if history_view else 1
 					drawBoard(board)
 					pygame.draw.rect(screen, WHITE, (0,0, screenWidth - 250 - PADDING, SQUARESIZE*1))
-					screen.blit(renderText("Press any key to return to the menu", BLACK, 47 if os.name == 'nt' else 48), (PADDING/2, SQUARESIZE/2))
+					screen.blit(renderText("Press any key to return to the menu", BLACK, 48 if sys.platform == "linux" else 47), (PADDING/2, SQUARESIZE/2))
 					pygame.display.update()
 			if event.type == pygame.KEYDOWN:
 				results_screen = 0

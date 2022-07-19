@@ -5,6 +5,7 @@ import os
 import base64
 import tempfile
 
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide" # Hide "Hello from pygame community" text
 try:
 	import numpy
 	import pygame

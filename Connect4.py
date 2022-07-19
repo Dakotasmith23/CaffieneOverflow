@@ -246,7 +246,6 @@ def drawMessage(message, backgroundColor, foregroundColor, strokeColor, duration
 def drawStartUI(board, gameOver):
 	"""Draws main menu UI"""
 	menu = True
-	game_history.clear()
 
 	# Flush previous screen
 	pygame.Surface.fill(screen, WHITE)
@@ -585,6 +584,7 @@ def gameLoop(gameOver, board, mode):
 				results_screen = 0
 
 	history_view = 0
+	game_history.clear()
 
 drawStartUI(createBoard(), gameOver)
 

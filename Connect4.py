@@ -81,6 +81,12 @@ gameOver = False
 game_history = []
 history_view = 0
 
+def deInit():
+	"""De-initializes the game properly"""
+	pygame.quit()
+	os.remove(font_file.name)
+	sys.exit()
+
 # Anti-aliasing (https://stackoverflow.com/questions/23852917/antialiasing-shapes-in-pygame)
 def drawCircle(surface, color, pos, radius):
 	"""Draw an anti aliased circle"""
@@ -234,7 +240,7 @@ def drawMessage(message, backgroundColor, foregroundColor, strokeColor, duration
 		
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
-				sys.exit()
+				deInit()
 
 def drawStartUI(board, gameOver):
 	"""Draws main menu UI"""
@@ -491,7 +497,7 @@ def gameLoop(gameOver, board, mode):
 	while not gameOver:
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
-				sys.exit()
+				deInit()
 
 			if event.type == pygame.MOUSEMOTION:
 				posx = event.pos[0]
@@ -565,7 +571,7 @@ def gameLoop(gameOver, board, mode):
 	while results_screen:
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
-				sys.exit()
+				deInit()
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				posx = event.pos[0]
 				if (posx >= (screenWidth - 250 - PADDING)) and (len(game_history) >= 23): # Clicked on right side of screen
@@ -582,6 +588,4 @@ def gameLoop(gameOver, board, mode):
 drawStartUI(createBoard(), gameOver)
 
 # Deinit
-pygame.quit()
-os.remove(font_file.name)
-sys.exit()
+deInit()

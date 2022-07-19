@@ -531,7 +531,7 @@ def gameLoop(gameOver, board, mode):
 						elif tieGame(board):
 							currentWinner = 3
 							gameOver = True
-						print("--- TURN " + str(len(game_history)) + " ---")
+						print("\033[1;37m--- TURN " + str(len(game_history)) + " ---")
 						printBoard(board)
 						drawBoard(board)
 					else:
@@ -544,7 +544,7 @@ def gameLoop(gameOver, board, mode):
 
 		if mode and turn and not currentWinner: #aka if AI
 			dropPieceAI(mode, board, turn+1)
-			print("--- TURN " + str(len(game_history)) + " ---")
+			print("\033[1;37m--- TURN " + str(len(game_history)) + " ---")
 			printBoard(board)
 			drawBoard(board)
 			if winningMove(board, turn+1):

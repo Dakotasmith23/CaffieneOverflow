@@ -231,6 +231,10 @@ def drawMessage(message, backgroundColor, foregroundColor, strokeColor, duration
 		screen.blit(mText, (screenWidth/2 - (rText[2]/2), 320))
 		
 		pygame.display.update()
+		
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				sys.exit()
 
 def drawStartUI(board, gameOver):
 	"""Draws main menu UI"""

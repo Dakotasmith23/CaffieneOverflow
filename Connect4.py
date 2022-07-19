@@ -574,7 +574,6 @@ def gameLoop(gameOver, board, mode):
 				results_screen = 0
 
 	history_view = 0
-	drawStartUI(board, gameOver)
 
 drawStartUI(createBoard(), gameOver)
 

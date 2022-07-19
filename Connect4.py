@@ -32,7 +32,9 @@ except ImportError:
 			# https://pip.pypa.io/en/latest/user_guide/#using-pip-from-your-program
 			subprocess.check_call([sys.executable, "-m", "pip", "install", "pygame"])
 			subprocess.check_call([sys.executable, "-m", "pip", "install", "numpy"])
-			os.startfile(sys.argv[0]) # Restart game
+			print("Done")
+			print("-------------")
+			subprocess.check_call([sys.executable, sys.argv[0]])
 		sys.exit()
 
 	checkRequirements()

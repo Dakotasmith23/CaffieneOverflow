@@ -569,6 +569,7 @@ def gameLoop(gameOver, board, mode):
 
 	results_screen = 1
 	drawBoard(board)
+	pygame.draw.rect(screen, WHITE, (0,0, screenWidth - 250 - PADDING, SQUARESIZE*1))
 	screen.blit(renderText("Press any key to return to the menu", BLACK, 48 if sys.platform == "linux" else 47), (PADDING/2, SQUARESIZE/2))
 	pygame.display.update()
 	while results_screen:

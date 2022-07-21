@@ -59,7 +59,7 @@ NUM_ROWS= 6
 NUM_COLUMNS = 7
 SQUARESIZE = 87
 PADDING = 15
-FPS=30
+FPS=60
 
 # Sizes
 screenWidth = 1024
@@ -187,7 +187,6 @@ def drawBoard(board):
 				drawCircle(screen, YELLOW, (PADDING + int((c+1)*(SQUARESIZE + PADDING) - SQUARESIZE/2), screenHeight-int((r+1)*(SQUARESIZE+PADDING)-SQUARESIZE/2+PADDING)-1), RADIUS)
 
 	drawHistory(board)
-	pygame.display.update()
 
 def drawHistory(board):
 	"""Displays game history on a side panel"""
@@ -222,7 +221,6 @@ def drawHistory(board):
 	screen.blit(history, ((screenWidth - 235),PADDING*2), pygame.Rect(0, 0, 200, 692))
 	if len(game_history) >= 23:
 		screen.blit(renderText("Click for more", BLACK, 20), ((screenWidth - 235),PADDING*2 + 695))
-	pygame.display.update()
 
 def drawMessage(message, backgroundColor, foregroundColor, strokeColor, duration):
 	"""Uses pygame's rect and label functionality to create a rectangle with the desired message for the user"""
@@ -239,11 +237,12 @@ def drawMessage(message, backgroundColor, foregroundColor, strokeColor, duration
 		screen.blit(mText2, (screenWidth/2 - (rText2[2]/2) + 3, 323))
 		screen.blit(mText, (screenWidth/2 - (rText[2]/2), 320))
 		
-		pygame.display.update()
-		
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				deInit()
+
+		clock.tick(FPS)
+		pygame.display.update()
 
 def drawStartUI(board, gameOver):
 	"""Draws main menu UI"""
@@ -375,9 +374,9 @@ def drawStartUI(board, gameOver):
 		screen.blit(text_quit, ((player_v_player_o_rect.centerx - (text_quit.get_rect().width/2)), (player_v_player_o_rect.centery - (text_quit.get_rect().height/2))))
 		logo.blit(title, ((logo.get_width() - title.get_rect().width)/2, (SQUARESIZE*4 - title.get_rect().height)/2))
 		screen.blit(pygame.transform.smoothscale(logo, (468, 403)), (screenWidth/2 - int(468/2), PADDING))
-		pygame.display.update()
-		clock.tick(FPS)
 		pygame.display.set_caption("Connect Four")
+		clock.tick(FPS)
+		pygame.display.update()
 
 def dropPieceAI(difficulty, board, piece):
 	"""Select the best move determined on the AI difficulty"""
@@ -558,6 +557,7 @@ def gameLoop(gameOver, board, mode):
 			turn += 1
 			turn = turn % 2
 
+		clock.tick(FPS)
 		pygame.display.update()
 
 	if currentWinner == 1:
@@ -571,7 +571,6 @@ def gameLoop(gameOver, board, mode):
 	drawBoard(board)
 	pygame.draw.rect(screen, WHITE, (0,0, screenWidth - 250 - PADDING, SQUARESIZE*1))
 	screen.blit(renderText("Press any key to return to the menu", BLACK, 48 if sys.platform == "linux" else 47), (PADDING/2, SQUARESIZE/2))
-	pygame.display.update()
 	while results_screen:
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
@@ -583,9 +582,11 @@ def gameLoop(gameOver, board, mode):
 					drawBoard(board)
 					pygame.draw.rect(screen, WHITE, (0,0, screenWidth - 250 - PADDING, SQUARESIZE*1))
 					screen.blit(renderText("Press any key to return to the menu", BLACK, 48 if sys.platform == "linux" else 47), (PADDING/2, SQUARESIZE/2))
-					pygame.display.update()
 			if event.type == pygame.KEYDOWN:
 				results_screen = 0
+
+		clock.tick(FPS)
+		pygame.display.update()
 
 	history_view = 0
 	game_history.clear()

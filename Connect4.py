@@ -522,6 +522,7 @@ def gameLoop(gameOver, board, mode):
 					drawBoard(board)
 				elif (posx > PADDING and posx < (screenWidth - 250 - PADDING)):
 					col = int(math.floor((posx-PADDING)/(SQUARESIZE+PADDING)))
+					col = 6 if col > 6 else col # Fix a bug improperly
 					if isValidLocation(board, col):
 						pygame.draw.rect(screen, WHITE, (0,0, screenWidth, SQUARESIZE))
 						row = getNextOpenRow(board, col)
